@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 public class DataControlPanel extends JPanel{
     private final Data data;
@@ -45,6 +44,7 @@ public class DataControlPanel extends JPanel{
 
         dataSize.addChangeListener(e -> {
             if(!dataSize.getValueIsAdjusting()) {
+                data.stopThreadAndFixChart(Data.DataActions.IN_ORDER);
                 data.changeSize(dataSize.getValue());
             }
         });
@@ -60,34 +60,20 @@ public class DataControlPanel extends JPanel{
     private JPanel makeSortButtonPanel() {
         JPanel sortButtonPanel = new JPanel();
         JLabel subtitle = new JLabel("Pre-Sort Data:");
-        JButton autoSort = new JButton("In Order");
-        JButton reverseSort = new JButton("Reverse Order");
-        JButton oneOut = new JButton("One Out of Order");
-        JButton randomize = new JButton("Randomize");
-        JButton previousData = new JButton("Previous Data");
-
+        sortButtonPanel.add(subtitle);
         sortButtonPanel.setLayout(new GridLayout(8,1));
 
-        autoSort.addActionListener(e->data.stopThread());
-        reverseSort.addActionListener(e->data.stopThread());
-        oneOut.addActionListener(e->data.stopThread());
-        randomize.addActionListener(e->data.stopThread());
-        previousData.addActionListener(e->data.stopThread());
+        for (Data.DataActions action : Data.DataActions.values()) {
+            JButton actionButton = new JButton(action.title);
+            actionButton.addActionListener(e->data.stopThreadAndFixChart(action));
+            sortButtonPanel.add(actionButton);
+        }
 
-        autoSort.addActionListener(e -> data.setSortedOrder());
-        reverseSort.addActionListener(e -> data.setReverseOrder());
-        oneOut.addActionListener(e -> data.setOneNotInOrder());
-        randomize.addActionListener(e -> data.randomize());
-        previousData.addActionListener(e -> data.retrieveOldData());
-
-
-        sortButtonPanel.add(subtitle);
-        sortButtonPanel.add(autoSort);
-        sortButtonPanel.add(reverseSort);
-        sortButtonPanel.add(oneOut);
-        sortButtonPanel.add(randomize);
-        sortButtonPanel.add(new JLabel());
-        sortButtonPanel.add(previousData);
+        int lastButtonIndex = sortButtonPanel.getComponents().length - 1;
+        JButton lastButton = (JButton)sortButtonPanel.getComponent(lastButtonIndex);
+        sortButtonPanel.remove(lastButtonIndex);
+        sortButtonPanel.add(new JLabel(""));
+        sortButtonPanel.add(lastButton);
 
         return sortButtonPanel;
     }

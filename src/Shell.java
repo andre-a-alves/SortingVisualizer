@@ -12,7 +12,7 @@ public abstract class Shell extends Sort{
         }
     }
 
-    private static void sort(Data data, int gap, int upperbound) {
+    protected static void sort(Data data, int gap, int upperbound) {
         for (int i = 0; i < gap; i++) {
             for (int k = i; k <= upperbound; k += gap) {
                 for (int j = k; j > 0; j -= gap) {
@@ -23,7 +23,7 @@ public abstract class Shell extends Sort{
         }
     }
 
-    private static void drawPivots(Data data, int gap, int upperBound) {
+    protected static void drawPivots(Data data, int gap, int upperBound) {
         BarGraphPanel graphPanel = data.getGraphPanel();
         for (int i = 0; i <= upperBound; i += gap) graphPanel.highlightPivot(i);
     }

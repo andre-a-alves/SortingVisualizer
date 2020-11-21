@@ -29,7 +29,7 @@ public class RunnableSort implements Runnable{
                 Merge.sort(data);
                 break;
             case QUICK:
-                Quick.sort(data);
+                QuickHighIndex.sort(data);
                 break;
             case QUICK_HOARE:
                 QuickHoare.sort(data);

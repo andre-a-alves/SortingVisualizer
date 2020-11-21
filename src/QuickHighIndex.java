@@ -1,10 +1,10 @@
 
-public abstract class Quick extends Sort {
+public abstract class QuickHighIndex extends Sort {
     public static void sort(Data data) {
         sort(data, 0, data.getDataSeries().getItemCount() - 1);
     }
 
-    private static void sort(Data data, int lowerBound, int upperBound) {
+    protected static void sort(Data data, int lowerBound, int upperBound) {
         if (upperBound - lowerBound < 1) return;
         int inPlace = partition(data, lowerBound, upperBound);
         sort(data, lowerBound, inPlace - 1);

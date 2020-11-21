@@ -18,31 +18,6 @@ public class BarGraphPanel extends ChartPanel{
     private final XYSeries dataSeries;
     public static int delayFactor = 10;
 
-//    public BarGraphPanel(Data data) {
-//        super(ChartFactory.
-//                createXYBarChart("",
-//                        "",
-//                        false,"",
-//                        data.makeDataSeriesCollection()));
-//        JFreeChart dataChart = this.getChart();
-//        dataChart.getXYPlot().getRangeAxis().setVisible(false);
-//        dataChart.getXYPlot().getDomainAxis().setVisible(false);
-//        dataChart.getXYPlot().setDomainGridlinesVisible(false);
-//        dataChart.getXYPlot().setRangeGridlinesVisible(false);
-//        dataChart.getLegend().setPosition(RectangleEdge.TOP);
-////        dataChart.removeLegend();
-//        ((XYBarRenderer) dataChart.getXYPlot().getRenderer()).setBarPainter(new StandardXYBarPainter());
-//
-//        XYSeriesCollection dataSeriesCollection = data.makeDataSeriesCollection();
-//        pivotSeries = dataSeriesCollection.getSeries("pivot");
-//        boundSeries = dataSeriesCollection.getSeries("bound");
-//        swapSeries = dataSeriesCollection.getSeries("swap");
-//        compareSeries = dataSeriesCollection.getSeries("compare");
-//        dataSeries = dataSeriesCollection.getSeries("data");
-//        Sort.setBarGraphPanel(this);
-//        dataChart.getXYPlot().getRangeAxis().setRange(0, Sort.size + 4);
-//    }
-
     public BarGraphPanel(XYSeriesCollection dataSeriesCollection) {
         super(ChartFactory.
                 createXYBarChart("",
@@ -51,6 +26,7 @@ public class BarGraphPanel extends ChartPanel{
                         dataSeriesCollection));
         JFreeChart dataChart = this.getChart();
         dataChart.getXYPlot().getRangeAxis().setVisible(false);
+        dataChart.getXYPlot().getRangeAxis().setInverted(true);
         dataChart.getXYPlot().getDomainAxis().setVisible(false);
         dataChart.getXYPlot().setDomainGridlinesVisible(false);
         dataChart.getXYPlot().setRangeGridlinesVisible(false);
@@ -62,7 +38,6 @@ public class BarGraphPanel extends ChartPanel{
         swapSeries = dataSeriesCollection.getSeries("swap");
         compareSeries = dataSeriesCollection.getSeries("compare");
         dataSeries = dataSeriesCollection.getSeries("data");
-//        Sort.setBarGraphPanel(this);
         dataChart.getXYPlot().getRangeAxis().setRange(0, dataSeries.getMaxY() + 4);
     }
 
@@ -95,6 +70,13 @@ public class BarGraphPanel extends ChartPanel{
 
     public void unhighlightPivot() {
         pivotSeries.clear();
+    }
+
+    public void clearHighlights() {
+        unhighlightPivot();
+        unhighlightBounds();
+        swapSeries.clear();
+        compareSeries.clear();
     }
 
     private void delay(int length) {

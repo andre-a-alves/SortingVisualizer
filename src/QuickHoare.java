@@ -15,7 +15,7 @@ public abstract class QuickHoare extends Sort {
 
     }
 
-    private static int partition(Data data, int lowerBound, int upperBound) {
+    protected static int partition(Data data, int lowerBound, int upperBound) {
         BarGraphPanel graphPanel = data.getGraphPanel();
         XYSeries dataSeries = data.getDataSeries();
 

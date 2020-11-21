@@ -79,29 +79,47 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
         bubbleSort.addActionListener(e -> dataControlPanel.setBubbleSort());
         sortMenu.add(bubbleSort);
 
-        JMenuItem quickSort = new JMenuItem("Quick Sort: Generic");
+        JMenu subMenu = new JMenu("Quick Sort");
+        sortMenu.add(subMenu);
+
+        JMenuItem quickSort = new JMenuItem("Generic");
         quickSort.addActionListener(e->dataControlPanel.setQuickSort());
-        sortMenu.add(quickSort);
+        subMenu.add(quickSort);
 
-        JMenuItem quickSortHoare = new JMenuItem("Quick Sort: Hoare");
+        JMenuItem quickSortHoare = new JMenuItem("Hoare");
         quickSortHoare.addActionListener(e->dataControlPanel.setQuickSortHoare());
-        sortMenu.add(quickSortHoare);
+        subMenu.add(quickSortHoare);
 
-        JMenuItem quickSortLomuto = new JMenuItem("Quick Sort: Lomuto");
+        JMenuItem quickSortLomuto = new JMenuItem("Lomuto");
         quickSortLomuto.addActionListener(e->dataControlPanel.setQuickSortLomuto());
-        sortMenu.add(quickSortLomuto);
+        subMenu.add(quickSortLomuto);
 
-        JMenuItem quickSortMedian = new JMenuItem("Quick Sort: Median-of-Three");
+        JMenuItem quickSortMedian = new JMenuItem("Median-of-Three");
         quickSortMedian.addActionListener(e->dataControlPanel.setQuickSortMedian());
-        sortMenu.add(quickSortMedian);
+        subMenu.add(quickSortMedian);
 
-        JMenuItem quickSortInsertion = new JMenuItem("Quick Sort: Insertion");
+        JMenuItem quickSortInsertion = new JMenuItem("With Insertion");
         quickSortInsertion.addActionListener(e->dataControlPanel.setQuickSortInsertion());
-        sortMenu.add(quickSortInsertion);
+        subMenu.add(quickSortInsertion);
 
         JMenuItem mergeSort = new JMenuItem("Merge Sort");
         mergeSort.addActionListener(e->dataControlPanel.setMergeSort());
         sortMenu.add(mergeSort);
+
+        JMenuItem heapSort = new JMenuItem("Heap Sort");
+        heapSort.addActionListener(e->dataControlPanel.setHeapSort());
+        sortMenu.add(heapSort);
+
+        JMenu sortSubMenu = new JMenu("Shell Sort");
+        sortMenu.add(sortSubMenu);
+
+        JMenuItem shellSort = new JMenuItem("Shell");
+        shellSort.addActionListener(e->dataControlPanel.setShellSort());
+        sortSubMenu.add(shellSort);
+
+        JMenuItem shellKnuthSort = new JMenuItem("Knuth");
+        shellKnuthSort.addActionListener(e->dataControlPanel.setShellKnuthSort());
+        sortSubMenu.add(shellKnuthSort);
 
         return sortMenu;
     }

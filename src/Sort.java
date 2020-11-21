@@ -24,19 +24,43 @@ public abstract class Sort {
         }
     }
 
+    public static void exchange(Data data, int indexOne, int indexTwo) {
+        exchange(data, indexOne, indexTwo, true);
+    }
+
+    public static void exchange(Data data, int indexOne, int indexTwo, boolean highlight) {
+        XYSeries dataSeries = data.getDataSeries();
+        BarGraphPanel graphPanel = data.getGraphPanel();
+
+        if (highlight) barGraphPanel.highlightSwap(indexTwo, indexOne);
+        Number orig = dataSeries.getY(indexOne);
+        dataSeries.updateByIndex(indexOne, dataSeries.getY(indexTwo));
+        dataSeries.updateByIndex(indexTwo, orig);
+        if (highlight) barGraphPanel.highlightSwap(indexTwo, indexOne);
+    }
+
     public static boolean less(int firstIndex, int secondIndex) {
         if (secondIndex < 0) return false;
         barGraphPanel.highlightCompare(firstIndex, secondIndex);
         return dataSeries.getY(firstIndex).intValue() < dataSeries.getY(secondIndex).intValue();
     }
 
-    public static boolean greater(int firstIndex, int secondIndex) {
-        barGraphPanel.highlightCompare(firstIndex, secondIndex);
-        return dataSeries.getY(firstIndex).intValue() > dataSeries.getY(secondIndex).intValue();
-    }
-
     public static boolean less(int firstIndex, int secondIndex, boolean delay) {
         if (delay) less(firstIndex, secondIndex);
+        return dataSeries.getY(firstIndex).intValue() < dataSeries.getY(secondIndex).intValue();
+    }
+
+    public static boolean less(Data data, int firstIndex, int secondIndex) {
+        return less(data, firstIndex, secondIndex, true);
+    }
+
+    public static boolean less(Data data, int firstIndex, int secondIndex, boolean highlight) {
+        if (secondIndex < 0) return false;
+
+        XYSeries dataSeries = data.getDataSeries();
+        BarGraphPanel graphPanel = data.getGraphPanel();
+
+        if (highlight) graphPanel.highlightCompare(firstIndex, secondIndex);
         return dataSeries.getY(firstIndex).intValue() < dataSeries.getY(secondIndex).intValue();
     }
 
@@ -45,15 +69,15 @@ public abstract class Sort {
     }
 
     public static void initialize(int size, Data data) {
-        dataSeries = data.getDataSeriesCollection().getSeries("data");
+        dataSeries = data.makeDataSeriesCollection().getSeries("data");
         Sort.data = data;
         Sort.size = size;
     }
 
-    public static void setSize(int size) {
-        Sort.size = size;
-        barGraphPanel.getChart().getXYPlot().getRangeAxis().setRange(0, size + 4);
-    }
+//    public static void setSize(int size) {
+//        Sort.size = size;
+//        barGraphPanel.getChart().getXYPlot().getRangeAxis().setRange(0, size + 4);
+//    }
 
     public static void setBarGraphPanel(BarGraphPanel barGraphPanel) {
         Sort.barGraphPanel = barGraphPanel;

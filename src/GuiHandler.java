@@ -10,10 +10,11 @@ public class GuiHandler extends JFrame {
     public GuiHandler() {
         super("Visual Sorter");
         Data data = new Data();
+        barGraphPanel = data.getGraphPanel();
         titleBar = makeTitleBar();
         dataControlPanel = new DataControlPanel(data, this);
         this.setJMenuBar(new MainMenuBar(dataControlPanel));
-        barGraphPanel = new BarGraphPanel(data);
+//        barGraphPanel = new BarGraphPanel(data);
         makeMasterFrame();
         setVisible(true);
     }

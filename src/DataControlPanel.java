@@ -70,10 +70,28 @@ public class DataControlPanel extends JPanel{
         guiHandler.setTitle("Quick Sort: Hoare with Insertion Sort for Small Lists");
     }
 
+    public void setHeapSort() {
+        clearSortButtonAction();
+        sortButton.addActionListener(e->data.heapSort());
+        guiHandler.setTitle("Heap Sort");
+    }
+
     public void setMergeSort() {
         clearSortButtonAction();
         sortButton.addActionListener(e->data.mergeSort());
         guiHandler.setTitle("Merge Sort");
+    }
+
+    public void setShellSort() {
+        clearSortButtonAction();
+        sortButton.addActionListener(e->data.shellSort());
+        guiHandler.setTitle("Shell Sort");
+    }
+
+    public void setShellKnuthSort() {
+        clearSortButtonAction();
+        sortButton.addActionListener(e->data.shellKnuthSort());
+        guiHandler.setTitle("Shell Sort using Knuth Sequence");
     }
 
     private void clearSortButtonAction () {
@@ -81,7 +99,6 @@ public class DataControlPanel extends JPanel{
                 sortButton.getActionListeners()) {
             sortButton.removeActionListener(actionListener);
         }
-//        sortButton.addActionListener(e->data.stopThread());
     }
 
     private JPanel makeToggles() {
@@ -106,7 +123,7 @@ public class DataControlPanel extends JPanel{
         });
         animationSpeed.addChangeListener(e -> {
             if(!animationSpeed.getValueIsAdjusting()) {
-                BarGraphPanel.changeSpeed(BarGraphPanel.maxDelayFactor + 1 - animationSpeed.getValue());
+                BarGraphPanel.changeSpeed(BarGraphPanel.maxDelayFactor + 5 - animationSpeed.getValue());
             }
         });
 

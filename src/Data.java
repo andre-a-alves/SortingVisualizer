@@ -7,9 +7,9 @@ import java.util.Random;
 import java.util.concurrent.*;
 
 public class Data {
-    public static final int defaultSize = 8;
-    public static final int minSize = 2;
-    public static final int maxSize = 64;
+    public static final int defaultSize = 32;
+    public static final int minSize = 4;
+    public static final int maxSize = 128;
     private int size;
     private final XYSeries dataSeries;
     private final XYSeries compareSeries;
@@ -18,6 +18,8 @@ public class Data {
     private final XYSeries pivotSeries;
     private ArrayList<Integer> savedList;
     private Thread sortingThread;
+    private final BarGraphPanel graphPanel;
+    private final RunnableSort sortRunnable;
 
     public Data(int size) {
         this.size = size;
@@ -27,12 +29,15 @@ public class Data {
         swapSeries = new XYSeries("swap");
         boundSeries = new XYSeries("bound");
         pivotSeries = new XYSeries("pivot");
+        sortRunnable = new RunnableSort(this);
 
         for (int i=0;i < size; i++) dataSeries.add(i,i);
 
         randomize();
         saveDataAsPrevious();
         Sort.initialize(size, this);
+
+        graphPanel = new BarGraphPanel(makeDataSeriesCollection());
     }
 
     public Data() {
@@ -41,11 +46,12 @@ public class Data {
 
     public void changeSize(int newSize) {
         size = newSize;
-        Sort.setSize(newSize);
+//        Sort.setSize(newSize);
+        graphPanel.setSize(size);
         randomize();
     }
 
-    public XYSeriesCollection getDataSeriesCollection() {
+    public XYSeriesCollection makeDataSeriesCollection() {
         XYSeriesCollection dataSeriesCollection = new XYSeriesCollection();
         dataSeriesCollection.addSeries(swapSeries);
         dataSeriesCollection.addSeries(dataSeries);
@@ -115,58 +121,122 @@ public class Data {
         savedList = currentData;
     }
 
+    public void setSortMethod(SortingMethods method) {
+        sortRunnable.setSortingMethod(method);
+    }
+
     public void selectionSort() {
         saveDataAsPrevious();
-        sortingThread = new Thread(Selection::sort);
+        stopThread();
+        setSortMethod(SortingMethods.SELECTION);
+        sortingThread = new Thread(sortRunnable);
+//        sortingThread = new Thread();
+        sortingThread.start();
+    }
+
+    private void sort() {
+        saveDataAsPrevious();
+        stopThread();
         sortingThread.start();
     }
 
     public void insertionSort() {
         saveDataAsPrevious();
-        sortingThread = new Thread(Insertion::sort);
+        stopThread();
+//        sortingThread = new Thread(Insertion::sort);
+        setSortMethod(SortingMethods.INSERTION);
+        sortingThread = new Thread(sortRunnable);
         sortingThread.start();
     }
 
 
     public void bubbleSort() {
         saveDataAsPrevious();
-        sortingThread = new Thread(Bubble::sort);
+        stopThread();
+        setSortMethod(SortingMethods.BUBBLE);
+        sortingThread = new Thread(sortRunnable);
+//        sortingThread = new Thread(Bubble::sort);
         sortingThread.start();
     }
 
     public void quickSort() {
         saveDataAsPrevious();
-        sortingThread = new Thread(Quick::sort);
+        stopThread();
+        setSortMethod(SortingMethods.QUICK);
+        sortingThread = new Thread(sortRunnable);
+//        sortingThread = new Thread(Quick::sort);
         sortingThread.start();
     }
 
     public void quickSortLomuto() {
         saveDataAsPrevious();
-        sortingThread = new Thread(QuickLomuto::sort);
+        stopThread();
+        setSortMethod(SortingMethods.QUICK_LOMUTO);
+        sortingThread = new Thread(sortRunnable);
+//        sortingThread = new Thread(QuickLomuto::sort);
         sortingThread.start();
     }
 
     public void quickSortHoare() {
         saveDataAsPrevious();
-        sortingThread = new Thread(QuickHoare::sort);
+        stopThread();
+        setSortMethod(SortingMethods.QUICK_HOARE);
+        sortingThread = new Thread(sortRunnable);
+//        sortingThread = new Thread(QuickHoare::sort);
         sortingThread.start();
     }
 
     public void quickSortMedian() {
         saveDataAsPrevious();
-        sortingThread = new Thread(QuickMedian::sort);
+        stopThread();
+        setSortMethod(SortingMethods.QUICK_MEDIAN);
+        sortingThread = new Thread(sortRunnable);
+//        sortingThread = new Thread(QuickMedian::sort);
         sortingThread.start();
     }
 
     public void quickSortInsertion() {
         saveDataAsPrevious();
-        sortingThread = new Thread(QuickInsertion::sort);
+        stopThread();
+        setSortMethod(SortingMethods.QUICK_INSERTION);
+        sortingThread = new Thread(sortRunnable);
+//        sortingThread = new Thread(QuickInsertion::sort);
         sortingThread.start();
     }
 
     public void mergeSort() {
         saveDataAsPrevious();
-        sortingThread = new Thread(Merge::sort);
+        stopThread();
+        setSortMethod(SortingMethods.MERGE);
+        sortingThread = new Thread(sortRunnable);
+//        sortingThread = new Thread(Merge::sort);
+        sortingThread.start();
+    }
+
+    public void heapSort() {
+        saveDataAsPrevious();
+        stopThread();
+        setSortMethod(SortingMethods.HEAP);
+        sortingThread = new Thread(sortRunnable);
+//        sortingThread = new Thread(Heap::sort);
+        sortingThread.start();
+    }
+
+    public void shellSort() {
+        saveDataAsPrevious();
+        stopThread();
+        setSortMethod(SortingMethods.SHELL_SHELL);
+        sortingThread = new Thread(sortRunnable);
+//        sortingThread = new Thread(Shell::sort);
+        sortingThread.start();
+    }
+
+    public void shellKnuthSort() {
+        saveDataAsPrevious();
+        stopThread();
+        setSortMethod(SortingMethods.SHELL_KNUTH);
+        sortingThread = new Thread(sortRunnable);
+//        sortingThread = new Thread(ShellKnuth::sort);
         sortingThread.start();
     }
 
@@ -185,5 +255,17 @@ public class Data {
         System.out.println(testData);
         testData.mergeSort();
         System.out.println("merged: "+ testData.dataSeries.getItems());
+    }
+
+    public XYSeries getDataSeries() {
+        return dataSeries;
+    }
+
+    public BarGraphPanel getGraphPanel() {
+        return graphPanel;
+    }
+
+    public int getSize() {
+        return size;
     }
 }

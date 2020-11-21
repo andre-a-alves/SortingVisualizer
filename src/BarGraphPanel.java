@@ -8,9 +8,9 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 public class BarGraphPanel extends ChartPanel{
-    public static final int minDelayFactor = 2;
+    public static final int minDelayFactor = 1;
     public static final int maxDelayFactor = 100;
-    public static final int defaultDelayFactor = 25;
+    public static final int defaultDelayFactor = 40;
     private final XYSeries pivotSeries;
     private final XYSeries boundSeries;
     private final XYSeries swapSeries;
@@ -18,29 +18,52 @@ public class BarGraphPanel extends ChartPanel{
     private final XYSeries dataSeries;
     public static int delayFactor = 10;
 
-    public BarGraphPanel(Data data) {
+//    public BarGraphPanel(Data data) {
+//        super(ChartFactory.
+//                createXYBarChart("",
+//                        "",
+//                        false,"",
+//                        data.makeDataSeriesCollection()));
+//        JFreeChart dataChart = this.getChart();
+//        dataChart.getXYPlot().getRangeAxis().setVisible(false);
+//        dataChart.getXYPlot().getDomainAxis().setVisible(false);
+//        dataChart.getXYPlot().setDomainGridlinesVisible(false);
+//        dataChart.getXYPlot().setRangeGridlinesVisible(false);
+//        dataChart.getLegend().setPosition(RectangleEdge.TOP);
+////        dataChart.removeLegend();
+//        ((XYBarRenderer) dataChart.getXYPlot().getRenderer()).setBarPainter(new StandardXYBarPainter());
+//
+//        XYSeriesCollection dataSeriesCollection = data.makeDataSeriesCollection();
+//        pivotSeries = dataSeriesCollection.getSeries("pivot");
+//        boundSeries = dataSeriesCollection.getSeries("bound");
+//        swapSeries = dataSeriesCollection.getSeries("swap");
+//        compareSeries = dataSeriesCollection.getSeries("compare");
+//        dataSeries = dataSeriesCollection.getSeries("data");
+//        Sort.setBarGraphPanel(this);
+//        dataChart.getXYPlot().getRangeAxis().setRange(0, Sort.size + 4);
+//    }
+
+    public BarGraphPanel(XYSeriesCollection dataSeriesCollection) {
         super(ChartFactory.
                 createXYBarChart("",
                         "",
                         false,"",
-                        data.getDataSeriesCollection()));
+                        dataSeriesCollection));
         JFreeChart dataChart = this.getChart();
         dataChart.getXYPlot().getRangeAxis().setVisible(false);
         dataChart.getXYPlot().getDomainAxis().setVisible(false);
         dataChart.getXYPlot().setDomainGridlinesVisible(false);
         dataChart.getXYPlot().setRangeGridlinesVisible(false);
         dataChart.getLegend().setPosition(RectangleEdge.TOP);
-//        dataChart.removeLegend();
         ((XYBarRenderer) dataChart.getXYPlot().getRenderer()).setBarPainter(new StandardXYBarPainter());
 
-        XYSeriesCollection dataSeriesCollection = data.getDataSeriesCollection();
         pivotSeries = dataSeriesCollection.getSeries("pivot");
         boundSeries = dataSeriesCollection.getSeries("bound");
         swapSeries = dataSeriesCollection.getSeries("swap");
         compareSeries = dataSeriesCollection.getSeries("compare");
         dataSeries = dataSeriesCollection.getSeries("data");
         Sort.setBarGraphPanel(this);
-        dataChart.getXYPlot().getRangeAxis().setRange(0, Sort.size + 4);
+        dataChart.getXYPlot().getRangeAxis().setRange(0, dataSeries.getMaxY() + 4);
     }
 
     public void highlightCompare(int indexOne, int indexTwo) {
@@ -87,5 +110,9 @@ public class BarGraphPanel extends ChartPanel{
 
     public static void changeSpeed(int newDelayFactor) {
         delayFactor = newDelayFactor;
+    }
+
+    public void setSize(int newDataMax) {
+        getChart().getXYPlot().getRangeAxis().setRange(0, newDataMax + 4);
     }
 }

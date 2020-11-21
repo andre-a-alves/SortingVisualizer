@@ -1,30 +1,4 @@
-public class Shell extends Sort{
-
-    public static void sort() {
-        int gap = size / 2;
-        while (gap >= 1) {
-            drawPivots(gap, size - 1);
-            sort(gap, size -1);
-            barGraphPanel.unhighlightPivot();
-            gap = Math.floorDiv(gap, 2);
-        }
-    }
-
-    private static void sort(int gap, int upperbound) {
-        for (int i = 0; i < gap; i++) {
-            for (int k = i; k <= upperbound; k += gap) {
-                for (int j = k; j > 0; j -= gap) {
-                    if (less(j, j - gap)) exchange(j, j - gap);
-                    else break;
-                }
-            }
-        }
-    }
-
-    private static void drawPivots(int gap, int upperBound) {
-        for (int i = 0; i <= upperBound; i += gap) barGraphPanel.highlightPivot(i);
-    }
-
+public abstract class Shell extends Sort{
     public static void sort(Data data) {
         BarGraphPanel graphPanel = data.getGraphPanel();
         int size = data.getSize();

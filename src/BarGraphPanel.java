@@ -62,7 +62,7 @@ public class BarGraphPanel extends ChartPanel{
         swapSeries = dataSeriesCollection.getSeries("swap");
         compareSeries = dataSeriesCollection.getSeries("compare");
         dataSeries = dataSeriesCollection.getSeries("data");
-        Sort.setBarGraphPanel(this);
+//        Sort.setBarGraphPanel(this);
         dataChart.getXYPlot().getRangeAxis().setRange(0, dataSeries.getMaxY() + 4);
     }
 

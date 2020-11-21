@@ -1,38 +1,6 @@
 import java.util.Stack;
 
-public class ShellKnuth extends Sort{
-
-    public static void sort() {
-        Stack<Integer> gaps = new Stack<>();
-        int n = 1;
-        while(true) {
-            int nextGap = (Double.valueOf(Math.pow(3,n++)  - 1)).intValue() / 2;
-            if (nextGap <= size / 3) gaps.push(nextGap);
-            else break;
-        }
-        while (!gaps.empty()) {
-            int gap = gaps.pop();
-            drawPivots(gap, size - 1);
-            sort(gap, size -1);
-            barGraphPanel.unhighlightPivot();
-        }
-    }
-
-    private static void sort(int gap, int upperbound) {
-        for (int i = 0; i < gap; i++) {
-            for (int k = i; k <= upperbound; k += gap) {
-                for (int j = k; j > 0; j -= gap) {
-                    if (less(j, j - gap)) exchange(j, j - gap);
-                    else break;
-                }
-            }
-        }
-    }
-
-    private static void drawPivots(int gap, int upperBound) {
-        for (int i = 0; i <= upperBound; i += gap) barGraphPanel.highlightPivot(i);
-    }
-
+public abstract class ShellKnuth extends Sort{
     public static void sort(Data data) {
         BarGraphPanel graphPanel = data.getGraphPanel();
         int size = data.getSize();

@@ -1,6 +1,7 @@
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -35,7 +36,7 @@ public class Data {
 
         randomize();
         saveDataAsPrevious();
-        Sort.initialize(size, this);
+//        Sort.initialize(size, this);
 
         graphPanel = new BarGraphPanel(makeDataSeriesCollection());
     }
@@ -89,7 +90,7 @@ public class Data {
             int randomIndex = ThreadLocalRandom.current().nextInt(size - 2);
             setSortedOrder();
                 for (int i = size - 2; i >= randomIndex + 1; i--)
-                Sort.exchange(i--, i++, false);
+                Sort.exchange(this, i--, i++, false);
         }
     }
 
@@ -122,123 +123,125 @@ public class Data {
     }
 
     public void setSortMethod(SortingMethods method) {
+        stopThread();
         sortRunnable.setSortingMethod(method);
     }
 
-    public void selectionSort() {
-        saveDataAsPrevious();
-        stopThread();
-        setSortMethod(SortingMethods.SELECTION);
-        sortingThread = new Thread(sortRunnable);
-//        sortingThread = new Thread();
-        sortingThread.start();
-    }
+//    public void selectionSort() {
+//        saveDataAsPrevious();
+//        stopThread();
+//        setSortMethod(SortingMethods.SELECTION);
+//        sortingThread = new Thread(sortRunnable);
+////        sortingThread = new Thread();
+//        sortingThread.start();
+//    }
 
-    private void sort() {
+    public void sort() {
         saveDataAsPrevious();
         stopThread();
-        sortingThread.start();
-    }
-
-    public void insertionSort() {
-        saveDataAsPrevious();
-        stopThread();
-//        sortingThread = new Thread(Insertion::sort);
-        setSortMethod(SortingMethods.INSERTION);
         sortingThread = new Thread(sortRunnable);
         sortingThread.start();
     }
 
-
-    public void bubbleSort() {
-        saveDataAsPrevious();
-        stopThread();
-        setSortMethod(SortingMethods.BUBBLE);
-        sortingThread = new Thread(sortRunnable);
-//        sortingThread = new Thread(Bubble::sort);
-        sortingThread.start();
-    }
-
-    public void quickSort() {
-        saveDataAsPrevious();
-        stopThread();
-        setSortMethod(SortingMethods.QUICK);
-        sortingThread = new Thread(sortRunnable);
-//        sortingThread = new Thread(Quick::sort);
-        sortingThread.start();
-    }
-
-    public void quickSortLomuto() {
-        saveDataAsPrevious();
-        stopThread();
-        setSortMethod(SortingMethods.QUICK_LOMUTO);
-        sortingThread = new Thread(sortRunnable);
-//        sortingThread = new Thread(QuickLomuto::sort);
-        sortingThread.start();
-    }
-
-    public void quickSortHoare() {
-        saveDataAsPrevious();
-        stopThread();
-        setSortMethod(SortingMethods.QUICK_HOARE);
-        sortingThread = new Thread(sortRunnable);
-//        sortingThread = new Thread(QuickHoare::sort);
-        sortingThread.start();
-    }
-
-    public void quickSortMedian() {
-        saveDataAsPrevious();
-        stopThread();
-        setSortMethod(SortingMethods.QUICK_MEDIAN);
-        sortingThread = new Thread(sortRunnable);
-//        sortingThread = new Thread(QuickMedian::sort);
-        sortingThread.start();
-    }
-
-    public void quickSortInsertion() {
-        saveDataAsPrevious();
-        stopThread();
-        setSortMethod(SortingMethods.QUICK_INSERTION);
-        sortingThread = new Thread(sortRunnable);
-//        sortingThread = new Thread(QuickInsertion::sort);
-        sortingThread.start();
-    }
-
-    public void mergeSort() {
-        saveDataAsPrevious();
-        stopThread();
-        setSortMethod(SortingMethods.MERGE);
-        sortingThread = new Thread(sortRunnable);
-//        sortingThread = new Thread(Merge::sort);
-        sortingThread.start();
-    }
-
-    public void heapSort() {
-        saveDataAsPrevious();
-        stopThread();
-        setSortMethod(SortingMethods.HEAP);
-        sortingThread = new Thread(sortRunnable);
-//        sortingThread = new Thread(Heap::sort);
-        sortingThread.start();
-    }
-
-    public void shellSort() {
-        saveDataAsPrevious();
-        stopThread();
-        setSortMethod(SortingMethods.SHELL_SHELL);
-        sortingThread = new Thread(sortRunnable);
-//        sortingThread = new Thread(Shell::sort);
-        sortingThread.start();
-    }
-
-    public void shellKnuthSort() {
-        saveDataAsPrevious();
-        stopThread();
-        setSortMethod(SortingMethods.SHELL_KNUTH);
-        sortingThread = new Thread(sortRunnable);
-//        sortingThread = new Thread(ShellKnuth::sort);
-        sortingThread.start();
-    }
+//    public void insertionSort() {
+//        saveDataAsPrevious();
+//        stopThread();
+////        sortingThread = new Thread(Insertion::sort);
+//        setSortMethod(SortingMethods.INSERTION);
+//        sortingThread = new Thread(sortRunnable);
+//        sortingThread.start();
+//    }
+//
+//
+//    public void bubbleSort() {
+//        saveDataAsPrevious();
+//        stopThread();
+//        setSortMethod(SortingMethods.BUBBLE);
+//        sortingThread = new Thread(sortRunnable);
+////        sortingThread = new Thread(Bubble::sort);
+//        sortingThread.start();
+//    }
+//
+//    public void quickSort() {
+//        saveDataAsPrevious();
+//        stopThread();
+//        setSortMethod(SortingMethods.QUICK);
+//        sortingThread = new Thread(sortRunnable);
+////        sortingThread = new Thread(Quick::sort);
+//        sortingThread.start();
+//    }
+//
+//    public void quickSortLomuto() {
+//        saveDataAsPrevious();
+//        stopThread();
+//        setSortMethod(SortingMethods.QUICK_LOMUTO);
+//        sortingThread = new Thread(sortRunnable);
+////        sortingThread = new Thread(QuickLomuto::sort);
+//        sortingThread.start();
+//    }
+//
+//    public void quickSortHoare() {
+//        saveDataAsPrevious();
+//        stopThread();
+//        setSortMethod(SortingMethods.QUICK_HOARE);
+//        sortingThread = new Thread(sortRunnable);
+////        sortingThread = new Thread(QuickHoare::sort);
+//        sortingThread.start();
+//    }
+//
+//    public void quickSortMedian() {
+//        saveDataAsPrevious();
+//        stopThread();
+//        setSortMethod(SortingMethods.QUICK_MEDIAN);
+//        sortingThread = new Thread(sortRunnable);
+////        sortingThread = new Thread(QuickMedian::sort);
+//        sortingThread.start();
+//    }
+//
+//    public void quickSortInsertion() {
+//        saveDataAsPrevious();
+//        stopThread();
+//        setSortMethod(SortingMethods.QUICK_INSERTION);
+//        sortingThread = new Thread(sortRunnable);
+////        sortingThread = new Thread(QuickInsertion::sort);
+//        sortingThread.start();
+//    }
+//
+//    public void mergeSort() {
+//        saveDataAsPrevious();
+//        stopThread();
+//        setSortMethod(SortingMethods.MERGE);
+//        sortingThread = new Thread(sortRunnable);
+////        sortingThread = new Thread(Merge::sort);
+//        sortingThread.start();
+//    }
+//
+//    public void heapSort() {
+//        saveDataAsPrevious();
+//        stopThread();
+//        setSortMethod(SortingMethods.HEAP);
+//        sortingThread = new Thread(sortRunnable);
+////        sortingThread = new Thread(Heap::sort);
+//        sortingThread.start();
+//    }
+//
+//    public void shellSort() {
+//        saveDataAsPrevious();
+//        stopThread();
+//        setSortMethod(SortingMethods.SHELL_SHELL);
+//        sortingThread = new Thread(sortRunnable);
+////        sortingThread = new Thread(Shell::sort);
+//        sortingThread.start();
+//    }
+//
+//    public void shellKnuthSort() {
+//        saveDataAsPrevious();
+//        stopThread();
+//        setSortMethod(SortingMethods.SHELL_KNUTH);
+//        sortingThread = new Thread(sortRunnable);
+////        sortingThread = new Thread(ShellKnuth::sort);
+//        sortingThread.start();
+//    }
 
     @Override
     public String toString() {
@@ -247,14 +250,6 @@ public class Data {
 
     public void stopThread() {
         if (sortingThread != null) sortingThread.interrupt();
-    }
-
-    public static void main(String[] args) {
-        Data testData = new Data();
-        testData.randomize();
-        System.out.println(testData);
-        testData.mergeSort();
-        System.out.println("merged: "+ testData.dataSeries.getItems());
     }
 
     public XYSeries getDataSeries() {

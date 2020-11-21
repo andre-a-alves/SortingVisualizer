@@ -15,90 +15,17 @@ public class DataControlPanel extends JPanel{
 
         setLayout(new GridLayout(3,1));
         sortButton.setFont(new Font(sortButton.getFont().getName(), Font.PLAIN, 20));
-        setSelectionSort();
+        sortButton.addActionListener(e->data.sort());
+        setSortType(SortingMethods.SELECTION);
 
         add(makeToggles());
         add(makeSortButtonPanel());
         add(sortButton);
     }
 
-    public void setSelectionSort() {
-        clearSortButtonAction();
-        sortButton.addActionListener(e -> data.selectionSort());
-        guiHandler.setTitle("Selection Sort");
-    }
-
-    public void setBubbleSort() {
-        clearSortButtonAction();
-        sortButton.addActionListener(e -> data.bubbleSort());
-        guiHandler.setTitle("Bubble Sort");
-    }
-
-    public void setInsertSort() {
-        clearSortButtonAction();
-        sortButton.addActionListener(e -> data.insertionSort());
-        guiHandler.setTitle("Insertion Sort");
-    }
-
-    public void setQuickSort() {
-        clearSortButtonAction();
-        sortButton.addActionListener(e -> data.quickSort());
-        guiHandler.setTitle("Quick Sort");
-    }
-
-    public void setQuickSortLomuto() {
-        clearSortButtonAction();
-        sortButton.addActionListener(e->data.quickSortLomuto());
-        guiHandler.setTitle("Quick Sort: Lomuto");
-    }
-
-    public void setQuickSortHoare() {
-        clearSortButtonAction();
-        sortButton.addActionListener(e->data.quickSortHoare());
-        guiHandler.setTitle("Quick Sort: Hoare (1962)");
-    }
-
-    public void setQuickSortMedian() {
-        clearSortButtonAction();
-        sortButton.addActionListener(e->data.quickSortMedian());
-        guiHandler.setTitle("Quick Sort: Hoare with Median-of-Three Pivot (Sedgewick)");
-    }
-
-    public void setQuickSortInsertion() {
-        clearSortButtonAction();
-        sortButton.addActionListener(e->data.quickSortInsertion());
-        guiHandler.setTitle("Quick Sort: Hoare with Insertion Sort for Small Lists");
-    }
-
-    public void setHeapSort() {
-        clearSortButtonAction();
-        sortButton.addActionListener(e->data.heapSort());
-        guiHandler.setTitle("Heap Sort");
-    }
-
-    public void setMergeSort() {
-        clearSortButtonAction();
-        sortButton.addActionListener(e->data.mergeSort());
-        guiHandler.setTitle("Merge Sort");
-    }
-
-    public void setShellSort() {
-        clearSortButtonAction();
-        sortButton.addActionListener(e->data.shellSort());
-        guiHandler.setTitle("Shell Sort");
-    }
-
-    public void setShellKnuthSort() {
-        clearSortButtonAction();
-        sortButton.addActionListener(e->data.shellKnuthSort());
-        guiHandler.setTitle("Shell Sort using Knuth Sequence");
-    }
-
-    private void clearSortButtonAction () {
-        for (ActionListener actionListener :
-                sortButton.getActionListeners()) {
-            sortButton.removeActionListener(actionListener);
-        }
+    public void setSortType(SortingMethods newMethod) {
+        data.setSortMethod(newMethod);
+        guiHandler.setTitle(newMethod.title);
     }
 
     private JPanel makeToggles() {
@@ -152,6 +79,7 @@ public class DataControlPanel extends JPanel{
         oneOut.addActionListener(e -> data.setOneNotInOrder());
         randomize.addActionListener(e -> data.randomize());
         previousData.addActionListener(e -> data.retrieveOldData());
+
 
         sortButtonPanel.add(subtitle);
         sortButtonPanel.add(autoSort);

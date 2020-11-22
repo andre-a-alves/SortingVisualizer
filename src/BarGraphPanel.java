@@ -1,11 +1,16 @@
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYTextAnnotation;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.ui.RectangleEdge;
+import org.jfree.chart.ui.TextAnchor;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
+import java.awt.*;
 
 public class BarGraphPanel extends ChartPanel{
     private final XYSeries pivotSeries;
@@ -14,28 +19,48 @@ public class BarGraphPanel extends ChartPanel{
     private final XYSeries compareSeries;
     private final XYSeries dataSeries;
     public static int delayFactor = 10;
+    private final XYTextAnnotation comparisonCounterAnnotation;
+    private final XYTextAnnotation swapCounterAnnotation;
 
-    public BarGraphPanel(XYSeriesCollection dataSeriesCollection) {
+    public BarGraphPanel(XYSeriesCollection dataSeriesCollection, String comparisonCounter,
+                         String swapCounter) {
         super(ChartFactory.
                 createXYBarChart("",
                         "",
                         false,"",
                         dataSeriesCollection));
-        JFreeChart dataChart = this.getChart();
-        dataChart.getXYPlot().getRangeAxis().setVisible(false);
-        dataChart.getXYPlot().getRangeAxis().setInverted(true);
-        dataChart.getXYPlot().getDomainAxis().setVisible(false);
-        dataChart.getXYPlot().setDomainGridlinesVisible(false);
-        dataChart.getXYPlot().setRangeGridlinesVisible(false);
-        dataChart.getLegend().setPosition(RectangleEdge.TOP);
-        ((XYBarRenderer) dataChart.getXYPlot().getRenderer()).setBarPainter(new StandardXYBarPainter());
-
         pivotSeries = dataSeriesCollection.getSeries("pivot");
         boundSeries = dataSeriesCollection.getSeries("bound");
         swapSeries = dataSeriesCollection.getSeries("swap");
         compareSeries = dataSeriesCollection.getSeries("compare");
         dataSeries = dataSeriesCollection.getSeries("data");
-        dataChart.getXYPlot().getRangeAxis().setRange(0, dataSeries.getMaxY() + 4);
+        comparisonCounterAnnotation = annotationBuilder(1, TextAnchor.BASELINE_LEFT,
+                comparisonCounter);
+        swapCounterAnnotation = annotationBuilder((int)dataSeries.getMaxX(),
+                TextAnchor.BASELINE_RIGHT, swapCounter);
+
+        JFreeChart dataChart = this.getChart();
+        XYPlot plot = dataChart.getXYPlot();
+
+        plot.getRangeAxis().setVisible(false);
+        plot.getRangeAxis().setInverted(true);
+        plot.getDomainAxis().setVisible(false);
+        plot.setDomainGridlinesVisible(false);
+        plot.setRangeGridlinesVisible(false);
+        plot.getRangeAxis().setRange(0, dataSeries.getMaxY() + 4);
+        plot.addAnnotation(comparisonCounterAnnotation);
+        plot.addAnnotation(swapCounterAnnotation);
+        ((XYBarRenderer) plot.getRenderer()).setBarPainter(new StandardXYBarPainter());
+        dataChart.getLegend().setPosition(RectangleEdge.TOP);
+    }
+
+    private XYTextAnnotation annotationBuilder(int xLocation, TextAnchor anchor, String text) {
+        XYTextAnnotation annotation = new XYTextAnnotation(text, xLocation,
+                dataSeries.getMaxY() + 2);
+        annotation.setTextAnchor(anchor);
+        annotation.setFont(new Font(annotation.getFont().getName(), Font.PLAIN,
+                16));
+        return annotation;
     }
 
     public void highlightCompare(int indexOne, int indexTwo) {
@@ -93,6 +118,18 @@ public class BarGraphPanel extends ChartPanel{
 
     public void setSize(int newDataMax) {
         getChart().getXYPlot().getRangeAxis().setRange(0, newDataMax + 4);
+        comparisonCounterAnnotation.setX(1);
+        comparisonCounterAnnotation.setY(newDataMax + 2);
+        swapCounterAnnotation.setX(newDataMax);
+        swapCounterAnnotation.setY(newDataMax + 2);
+    }
+
+    public void updateComparisonAnnotation(String newText) {
+        comparisonCounterAnnotation.setText(newText);
+    }
+
+    public void updateSwapAnnotation(String newText) {
+        swapCounterAnnotation.setText(newText);
     }
 
     public void configureForMultipleConditionDisplay() {

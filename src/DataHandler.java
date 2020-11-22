@@ -16,6 +16,7 @@ public abstract class DataHandler extends JPanel{
     abstract void sort();
     abstract void setDataSize(int newSize);
     abstract void setBehavior(SortingMethods sortingMethod);
+
     protected DataHandler() {
         super();
         previousData = new ArrayList<>();

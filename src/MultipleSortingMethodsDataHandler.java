@@ -71,4 +71,5 @@ public class MultipleSortingMethodsDataHandler extends DataHandler {
     public void setBehavior(SortingMethods sortingMethod) {
 //        guiHandler.setSingleMethodMode(sortingMethod);
     }
+
 }

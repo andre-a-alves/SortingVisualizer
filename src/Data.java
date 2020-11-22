@@ -17,6 +17,10 @@ public class Data {
     private Thread sortingThread;
     private final BarGraphPanel graphPanel;
     private final RunnableSort sortRunnable;
+    private int comparisonCounter;
+    private String comparisonCounterString;
+    private int swapCounter;
+    private String swapCounterString;
 
     public Data(int size) {
         this.size = size;
@@ -27,17 +31,57 @@ public class Data {
         boundSeries = new XYSeries("bound");
         pivotSeries = new XYSeries("pivot");
         sortRunnable = new RunnableSort(this);
+        comparisonCounter = 0;
+        swapCounter = 0;
+        comparisonCounterString = "";
+        swapCounterString = "";
 
         for (int i=0;i < size; i++) dataSeries.add(i,i);
 
         randomize();
         saveDataAsPrevious();
 
-        graphPanel = new BarGraphPanel(makeDataSeriesCollection());
+        graphPanel = new BarGraphPanel(makeDataSeriesCollection(), comparisonCounterString, swapCounterString);
+        resetCounters();
     }
 
     public Data() {
         this(SingleDataHandler.DEFAULT_SIZE);
+    }
+
+    public void resetCounters() {
+        swapCounter = 0;
+        comparisonCounter = 0;
+        updateSwapCounterString();
+        updateComparisonCounterString();
+    }
+
+    public String getComparisonCounterString() {
+        return comparisonCounterString;
+    }
+
+    public String getSwapCounterString() {
+        return swapCounterString;
+    }
+
+    public void increaseComparisonCount() {
+        comparisonCounter++;
+        updateComparisonCounterString();
+    }
+
+    public void increaseSwapCount() {
+        swapCounter++;
+        updateSwapCounterString();
+    }
+
+    private void updateComparisonCounterString() {
+        comparisonCounterString = "Number of Comparison Operations: " + comparisonCounter;
+        graphPanel.updateComparisonAnnotation(comparisonCounterString);
+    }
+
+    private void updateSwapCounterString () {
+        swapCounterString = "Number of Swap Operations: " + swapCounter;
+        graphPanel.updateSwapAnnotation(swapCounterString);
     }
 
     public void changeSize(int newSize) {
@@ -125,6 +169,7 @@ public class Data {
         saveDataAsPrevious();
         stopThread();
         sortingThread = new Thread(sortRunnable);
+        resetCounters();
         sortingThread.start();
     }
 
@@ -179,6 +224,7 @@ public class Data {
     public void stopThreadAndInitializeChart(InitialData followOnAction) {
         ArrayList<Integer> previousData = (ArrayList<Integer>)savedList.clone();
         stopThread();
+        resetCounters();
         switch (followOnAction) {
             case REVERSE:
                 setReverseOrder();

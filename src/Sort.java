@@ -9,6 +9,7 @@ public abstract class Sort {
         XYSeries dataSeries = data.getDataSeries();
         BarGraphPanel graphPanel = data.getGraphPanel();
 
+        data.increaseSwapCount();
         if (highlight) graphPanel.highlightSwap(indexTwo, indexOne);
         Number orig = dataSeries.getY(indexOne);
         dataSeries.updateByIndex(indexOne, dataSeries.getY(indexTwo));
@@ -21,6 +22,7 @@ public abstract class Sort {
     }
 
     public static boolean less(Data data, int firstIndex, int secondIndex, boolean highlight) {
+        data.increaseComparisonCount();
         if (secondIndex < 0) return false;
 
         XYSeries dataSeries = data.getDataSeries();

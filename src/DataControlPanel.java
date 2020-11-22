@@ -1,39 +1,44 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
-public class DataControlPanel extends JPanel{
-    private final Data data;
-    JButton sortButton;
-    GuiHandler guiHandler;
+public abstract class DataControlPanel extends JPanel {
+    protected final GuiHandler guiHandler;
+    protected final DataHandler dataHandler;
 
-    public DataControlPanel(Data data, GuiHandler guiHandler) {
+    public DataControlPanel(GuiHandler guiHandler, DataHandler dataHandler) {
         super();
-        this.data = data;
-        this.sortButton = new JButton("Sort");
+        this.dataHandler = dataHandler;
         this.guiHandler = guiHandler;
-
         setLayout(new GridLayout(3,1));
-        sortButton.setFont(new Font(sortButton.getFont().getName(), Font.PLAIN, 20));
-        sortButton.addActionListener(e->data.sort());
-        setSortType(SortingMethods.SELECTION);
 
         add(makeToggles());
-        add(makeSortButtonPanel());
-        add(sortButton);
-    }
-
-    public void setSortType(SortingMethods newMethod) {
-        data.setSortMethod(newMethod);
-        guiHandler.setTitle(newMethod.title);
     }
 
     private JPanel makeToggles() {
+        Hashtable<Integer, JLabel> labels = new Hashtable<>();
+        labels.put(DataHandler.MIN_SIZE, new JLabel(String.valueOf(DataHandler.MIN_SIZE)));
+        labels.put(64, new JLabel("64"));
+        labels.put(96, new JLabel("96"));
+        labels.put(DataHandler.DEFAULT_SIZE, new JLabel(String.valueOf(DataHandler.DEFAULT_SIZE)));
+        labels.put(DataHandler.MAX_SIZE, new JLabel(String.valueOf(DataHandler.MAX_SIZE)));
         JPanel togglePanel = new JPanel();
-        JSlider dataSize = new JSlider(JSlider.HORIZONTAL, Data.minSize, Data.maxSize,
-                Data.defaultSize);
-        JSlider animationSpeed = new JSlider(JSlider.HORIZONTAL, BarGraphPanel.minDelayFactor,
-                BarGraphPanel.maxDelayFactor,
-                BarGraphPanel.maxDelayFactor - BarGraphPanel.defaultDelayFactor);
+        JSlider dataSize = new JSlider(JSlider.HORIZONTAL, SingleDataHandler.MIN_SIZE,
+                SingleDataHandler.MAX_SIZE,
+                SingleDataHandler.DEFAULT_SIZE);
+        dataSize.setMajorTickSpacing(32);
+        dataSize.setMinorTickSpacing(16);
+        dataSize.setLabelTable(labels);
+        dataSize.setPaintLabels(true);
+        dataSize.setPaintTicks(true);
+        JSlider animationSpeed = new JSlider(JSlider.HORIZONTAL, SingleDataHandler.MIN_DELAY_FACTOR,
+                SingleDataHandler.MAX_DELAY_FACTOR,
+                SingleDataHandler.DEFAULT_DELAY_FACTOR);
+        animationSpeed.setInverted(true);
+        animationSpeed.setMajorTickSpacing((DataHandler.MAX_DELAY_FACTOR - DataHandler.MIN_DELAY_FACTOR) / 4);
+        animationSpeed.setMinorTickSpacing((DataHandler.MAX_DELAY_FACTOR - DataHandler.MIN_DELAY_FACTOR) / 8);
+        animationSpeed.setPaintTicks(true);
 
         togglePanel.add(new JLabel("Data Size"));
         togglePanel.add(dataSize);
@@ -44,37 +49,21 @@ public class DataControlPanel extends JPanel{
 
         dataSize.addChangeListener(e -> {
             if(!dataSize.getValueIsAdjusting()) {
-                data.stopThreadAndFixChart(Data.DataActions.IN_ORDER);
-                data.changeSize(dataSize.getValue());
+                dataHandler.stopThreadsAndInitializeCharts(InitialData.IN_ORDER);
+                dataHandler.setDataSize(dataSize.getValue());
             }
         });
         animationSpeed.addChangeListener(e -> {
             if(!animationSpeed.getValueIsAdjusting()) {
-                BarGraphPanel.changeSpeed(BarGraphPanel.maxDelayFactor + 5 - animationSpeed.getValue());
+                dataHandler.setDelayFactor(animationSpeed.getValue());
             }
         });
 
         return togglePanel;
     }
 
-    private JPanel makeSortButtonPanel() {
-        JPanel sortButtonPanel = new JPanel();
-        JLabel subtitle = new JLabel("Pre-Sort Data:");
-        sortButtonPanel.add(subtitle);
-        sortButtonPanel.setLayout(new GridLayout(8,1));
-
-        for (Data.DataActions action : Data.DataActions.values()) {
-            JButton actionButton = new JButton(action.title);
-            actionButton.addActionListener(e->data.stopThreadAndFixChart(action));
-            sortButtonPanel.add(actionButton);
-        }
-
-        int lastButtonIndex = sortButtonPanel.getComponents().length - 1;
-        JButton lastButton = (JButton)sortButtonPanel.getComponent(lastButtonIndex);
-        sortButtonPanel.remove(lastButtonIndex);
-        sortButtonPanel.add(new JLabel(""));
-        sortButtonPanel.add(lastButton);
-
-        return sortButtonPanel;
+    public void setSortType(SortingMethods newMethod) {
+        dataHandler.setBehavior(newMethod);
+        guiHandler.setTitle(newMethod.title);
     }
 }

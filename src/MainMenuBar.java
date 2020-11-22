@@ -5,8 +5,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 public class MainMenuBar extends JMenuBar implements ActionListener {
-    final private String VERSION;
-    final private DataControlPanel dataControlPanel;
+    private final String VERSION;
+    private DataControlPanel dataControlPanel;
+    private final GuiHandler guiHandler;
 
     public void actionPerformed(ActionEvent event)
     {
@@ -16,10 +17,11 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
     /**
      * Constructor for objects of class MainMenu
      */
-    public MainMenuBar(DataControlPanel dataControlPanel)
+    public MainMenuBar(DataControlPanel dataControlPanel, GuiHandler guiHandler)
     {
         super();
-        VERSION = Sort.getVersion();
+        this.guiHandler = guiHandler;
+        VERSION = Application.getVersion();
         this.dataControlPanel = dataControlPanel;
         this.add(makeFileMenu());
         this.add(makeSortMenu());
@@ -76,10 +78,18 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
             else if (method.shellType) shellSortMenu.add(methodItem);
             else sortMenu.add(methodItem);
         }
+        JMenu compareMenu = new JMenu("Compare");
+        JMenuItem compareItem = new JMenuItem("Compare Initial Conditions");
+        compareItem.addActionListener(e->guiHandler.setMultipleInitialConditionComparisonMode());
+        compareMenu.add(compareItem);
+        JMenuItem compareMethodsItem = new JMenuItem("Compare Sorting Methods");
+        compareMenu.add(compareMethodsItem);
+        compareMethodsItem.addActionListener(e-> new ComparisonMenu(guiHandler));
 
         sortMenu.add(shellSortMenu);
         sortMenu.add(quickMenu);
-
+        sortMenu.add(new JSeparator());
+        sortMenu.add(compareMenu);
 
         return sortMenu;
     }
@@ -97,6 +107,10 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
                         "\nat andre@alves.me",
                 "About This Application",
                 JOptionPane.PLAIN_MESSAGE);
+    }
+
+    public void setDataControlPanel(DataControlPanel dataControlPanel) {
+        this.dataControlPanel = dataControlPanel;
     }
 
     private void quitApp()

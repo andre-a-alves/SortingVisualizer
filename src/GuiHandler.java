@@ -1,20 +1,22 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GuiHandler extends JFrame {
-    private final DataControlPanel dataControlPanel;
-    private final BarGraphPanel barGraphPanel;
+    private DataControlPanel dataControlPanel;
     private final JLabel titleBar;
+    private DataHandler dataHandler;
+    private final MainMenuBar menuBar;
 
     public GuiHandler() {
-        super("Visual Sorter");
-        Data data = new Data();
-        barGraphPanel = data.getGraphPanel();
+        super("Sorting Visualizer");
+        dataHandler = new SingleDataHandler();
         titleBar = makeTitleBar();
-        dataControlPanel = new DataControlPanel(data, this);
-        this.setJMenuBar(new MainMenuBar(dataControlPanel));
-//        barGraphPanel = new BarGraphPanel(data);
+        dataControlPanel = new SingleDataControlPanel(this, dataHandler);
+        menuBar = new MainMenuBar(dataControlPanel, this);
+        setJMenuBar(menuBar);
+
         makeMasterFrame();
         setVisible(true);
     }
@@ -32,19 +34,53 @@ public class GuiHandler extends JFrame {
     private void makeMasterFrame() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // Creates a master pane.
         JPanel masterContentPane = new JPanel();
 
         masterContentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         masterContentPane.setLayout(new BorderLayout(10, 10));
-        masterContentPane.add(barGraphPanel, BorderLayout.CENTER);
+        masterContentPane.add(dataHandler, BorderLayout.CENTER);
         masterContentPane.add(dataControlPanel, BorderLayout.WEST);
         masterContentPane.add(titleBar, BorderLayout.NORTH);
 
         setContentPane(masterContentPane);
 
         pack();
+    }
+
+    public void setMultipleInitialConditionComparisonMode() {
+        dataHandler = new MultipleInitialConditionDataHandler();
+        dataControlPanel = new MultipleInitialConditionDataControlPanel(this, dataHandler);
+        menuBar.setDataControlPanel(dataControlPanel);
+        setPreferredSize(new Dimension(1920, 1080));
+        makeMasterFrame();
+        revalidate();
+        repaint();
+    }
+
+    public void setMultipleSortMethodComparisonMode(ArrayList<SortingMethods> methods) {
+        dataHandler = new MultipleSortingMethodsDataHandler(this, methods);
+        dataControlPanel = new MultipleSortingMethodDataControlPanel(this, dataHandler);
+        menuBar.setDataControlPanel(dataControlPanel);
+        setPreferredSize(new Dimension(1920, 1080));
+        makeMasterFrame();
+        revalidate();
+        repaint();
+    }
+
+    public void setSingleMethodMode(SortingMethods method) {
+        setSingleMethodMode();
+        dataControlPanel.setSortType(method);
+    }
+
+    public void setSingleMethodMode() {
+        dataHandler = new SingleDataHandler();
+        dataControlPanel = new SingleDataControlPanel(this, dataHandler);
+        menuBar.setDataControlPanel(dataControlPanel);
+        setPreferredSize(null);
+        makeMasterFrame();
+        revalidate();
+        repaint();
     }
 
     public void setTitle(String newText) {

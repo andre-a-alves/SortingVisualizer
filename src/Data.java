@@ -7,9 +7,6 @@ import java.util.Random;
 import java.util.concurrent.*;
 
 public class Data {
-    public static final int defaultSize = 32;
-    public static final int minSize = 4;
-    public static final int maxSize = 128;
     private int size;
     private final XYSeries dataSeries;
     private final XYSeries compareSeries;
@@ -35,18 +32,16 @@ public class Data {
 
         randomize();
         saveDataAsPrevious();
-//        Sort.initialize(size, this);
 
         graphPanel = new BarGraphPanel(makeDataSeriesCollection());
     }
 
     public Data() {
-        this(defaultSize);
+        this(SingleDataHandler.DEFAULT_SIZE);
     }
 
     public void changeSize(int newSize) {
         size = newSize;
-//        Sort.setSize(newSize);
         graphPanel.setSize(size);
         randomize();
     }
@@ -68,7 +63,7 @@ public class Data {
             savedList.add(dataSeries.getY(i).intValue());
     }
 
-    public void setSortedOrder() {
+    private void setSortedOrder() {
         saveDataAsPrevious();
         dataSeries.clear();
         for (int i = 1; i <= size; i++) {
@@ -76,7 +71,7 @@ public class Data {
         }
     }
 
-    public void setReverseOrder() {
+    private void setReverseOrder() {
         saveDataAsPrevious();
         dataSeries.clear();
         for (int i = 1; i <= size; i++) {
@@ -84,7 +79,7 @@ public class Data {
         }
     }
 
-    public void setOneNotInOrder() {
+    private void setOneNotInOrder() {
         if (size > 2) {
             int randomIndex = ThreadLocalRandom.current().nextInt(size - 2);
             setSortedOrder();
@@ -93,7 +88,7 @@ public class Data {
         }
     }
 
-    public void randomize() {
+    private void randomize() {
         saveDataAsPrevious();
         ArrayList<Integer> newList = new ArrayList<>();
         for (int i = 1; i <= size; i++) {
@@ -158,7 +153,30 @@ public class Data {
         return size;
     }
 
-    public void stopThreadAndFixChart(DataActions followOnAction) {
+    public void setDataFromList(ArrayList<Integer> newData) {
+        stopThread();
+        saveDataAsPrevious();
+        dataSeries.clear();
+        size = newData.size();
+        for (int i = 0; i < size; i++) {
+            dataSeries.add(i, newData.get(i));
+        }
+    }
+
+    public void setPreviousDataFromList(ArrayList<Integer> newData) {
+        savedList.clear();
+        savedList.addAll(newData);
+    }
+
+    public ArrayList<Integer> getCurrentDataList() {
+        ArrayList<Integer> currentData = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            currentData.add(dataSeries.getY(i).intValue());
+        }
+        return currentData;
+    }
+
+    public void stopThreadAndInitializeChart(InitialData followOnAction) {
         ArrayList<Integer> previousData = (ArrayList<Integer>)savedList.clone();
         stopThread();
         switch (followOnAction) {
@@ -178,20 +196,6 @@ public class Data {
             case RANDOM:
             default:
                 randomize();
-        }
-    }
-
-    public enum DataActions {
-        IN_ORDER("In Order"),
-        REVERSE("Reverse Order"),
-        RANDOM("Randomize"),
-        ONE_OUT_OF_ORDER("One Out of Order"),
-        PREVIOUS("Previous Data");
-
-        String title;
-
-        DataActions(String title) {
-            this.title = title;
         }
     }
 

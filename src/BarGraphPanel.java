@@ -8,9 +8,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 public class BarGraphPanel extends ChartPanel{
-    public static final int minDelayFactor = 1;
-    public static final int maxDelayFactor = 100;
-    public static final int defaultDelayFactor = 40;
     private final XYSeries pivotSeries;
     private final XYSeries boundSeries;
     private final XYSeries swapSeries;
@@ -96,5 +93,15 @@ public class BarGraphPanel extends ChartPanel{
 
     public void setSize(int newDataMax) {
         getChart().getXYPlot().getRangeAxis().setRange(0, newDataMax + 4);
+    }
+
+    public void configureForMultipleConditionDisplay() {
+        this.getChart().getLegend().setVisible(false);
+    }
+
+    public void configureForMultipleMethodDisplay(SortingMethods method) {
+        this.getChart().getLegend().setVisible(false);
+        this.getChart().getTitle().setVisible(true);
+        this.getChart().setTitle(method.title);
     }
 }

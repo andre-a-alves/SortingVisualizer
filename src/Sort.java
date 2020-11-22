@@ -30,7 +30,4 @@ public abstract class Sort {
         return dataSeries.getY(firstIndex).intValue() < dataSeries.getY(secondIndex).intValue();
     }
 
-    public static String getVersion() {
-        return "0.1";
-    }
 }

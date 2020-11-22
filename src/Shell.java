@@ -7,7 +7,7 @@ public abstract class Shell extends Sort{
         while (gap >= 1) {
             drawPivots(data, gap, size - 1);
             sort(data, gap, size -1);
-            graphPanel.unhighlightPivot();
+            graphPanel.clearHighlights();
             gap = Math.floorDiv(gap, 2);
         }
     }
@@ -25,6 +25,6 @@ public abstract class Shell extends Sort{
 
     protected static void drawPivots(Data data, int gap, int upperBound) {
         BarGraphPanel graphPanel = data.getGraphPanel();
-        for (int i = 0; i <= upperBound; i += gap) graphPanel.highlightPivot(i);
+        for (int i = 0; i <= upperBound; i += gap) graphPanel.highlightSlice(i);
     }
 }

@@ -16,7 +16,7 @@ public abstract class ShellKnuth extends Shell{
             int gap = gaps.pop();
             drawPivots(data, gap, size - 1);
             sort(data, gap, size -1);
-            graphPanel.unhighlightPivot();
+            graphPanel.clearHighlights();
         }
     }
 }

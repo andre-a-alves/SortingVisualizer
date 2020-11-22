@@ -4,7 +4,7 @@ public enum SortingMethods {
     SHELL_SHELL("Shell Sort using Shell's Sequence", "Shell", false, true),
     SHELL_KNUTH("Shell Sort using Knuth Sequence", "Knuth", false, true),
     BUBBLE("Bubble Sort", "Bubble Sort"),
-    MERGE("Merge Sort", "Merge Sort"),
+    MERGE("Merge Sort with Sentinel", "Merge Sort"),
     QUICK("Quick Sort with Highest Index as Pivot", "High Index Pivot", true, false),
     QUICK_HOARE("Quick Sort as Written by Hoare (1962)", "Original", true, false),
     QUICK_LOMUTO("Quick Sort: Lomuto Implementation", "Lomuto", true, false),

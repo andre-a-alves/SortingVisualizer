@@ -11,8 +11,6 @@ public class Data {
     private final XYSeries dataSeries;
     private final XYSeries compareSeries;
     private final XYSeries swapSeries;
-    private final XYSeries boundSeries;
-    private final XYSeries pivotSeries;
     private ArrayList<Integer> savedList;
     private Thread sortingThread;
     private final BarGraphPanel graphPanel;
@@ -20,48 +18,53 @@ public class Data {
     private int comparisonCounter;
     private String comparisonCounterString;
     private int swapCounter;
-    private String swapCounterString;
+    private String copyCounterString;
+    private MergeViewer mergeViewer;
 
-    public Data(int size) {
+    public Data(int size, boolean mergeFlag, int height) {
         this.size = size;
         this.savedList = new ArrayList<>();
         dataSeries = new XYSeries("data");
         compareSeries = new XYSeries("compare");
         swapSeries = new XYSeries("swap");
-        boundSeries = new XYSeries("bound");
-        pivotSeries = new XYSeries("pivot");
         sortRunnable = new RunnableSort(this);
         comparisonCounter = 0;
         swapCounter = 0;
         comparisonCounterString = "";
-        swapCounterString = "";
+        copyCounterString = "";
 
         for (int i=0;i < size; i++) dataSeries.add(i,i);
 
         randomize();
         saveDataAsPrevious();
 
-        graphPanel = new BarGraphPanel(makeDataSeriesCollection(), comparisonCounterString, swapCounterString);
+        graphPanel = new BarGraphPanel(makeDataSeriesCollection(), comparisonCounterString, copyCounterString);
         resetCounters();
+        if (mergeFlag) {
+            mergeViewer = new MergeViewer(this);
+            graphPanel.setRangeHeight(height);
+//            graphPanel.getChart().getTitle().setVisible(true);
+            graphPanel.getChart().setTitle("Auxiliary Data for Merge Sort");
+        }
+    }
+
+    public Data(int size) {
+        this(size, false, size);
     }
 
     public Data() {
         this(SingleDataHandler.DEFAULT_SIZE);
     }
 
+    public void closeMergeWindow() {
+        mergeViewer.closeWindow();
+    }
+
     public void resetCounters() {
         swapCounter = 0;
         comparisonCounter = 0;
-        updateSwapCounterString();
+        updateCopyCounterString();
         updateComparisonCounterString();
-    }
-
-    public String getComparisonCounterString() {
-        return comparisonCounterString;
-    }
-
-    public String getSwapCounterString() {
-        return swapCounterString;
     }
 
     public void increaseComparisonCount() {
@@ -70,8 +73,13 @@ public class Data {
     }
 
     public void increaseSwapCount() {
+        swapCounter += 3;
+        updateCopyCounterString();
+    }
+
+    public void increaseCopyCount() {
         swapCounter++;
-        updateSwapCounterString();
+        updateCopyCounterString();
     }
 
     private void updateComparisonCounterString() {
@@ -79,9 +87,9 @@ public class Data {
         graphPanel.updateComparisonAnnotation(comparisonCounterString);
     }
 
-    private void updateSwapCounterString () {
-        swapCounterString = "Number of Swap Operations: " + swapCounter;
-        graphPanel.updateSwapAnnotation(swapCounterString);
+    private void updateCopyCounterString() {
+        copyCounterString = "Number of Copy Operations: " + swapCounter;
+        graphPanel.updateCopyAnnotation(copyCounterString);
     }
 
     public void changeSize(int newSize) {
@@ -95,8 +103,6 @@ public class Data {
         dataSeriesCollection.addSeries(swapSeries);
         dataSeriesCollection.addSeries(dataSeries);
         dataSeriesCollection.addSeries(compareSeries);
-        dataSeriesCollection.addSeries(pivotSeries);
-        dataSeriesCollection.addSeries(boundSeries);
 
         return  dataSeriesCollection;
     }

@@ -2,46 +2,77 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.annotations.XYTextAnnotation;
+import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.chart.ui.RectangleAnchor;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.TextAnchor;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class BarGraphPanel extends ChartPanel{
-    private final XYSeries pivotSeries;
-    private final XYSeries boundSeries;
     private final XYSeries swapSeries;
     private final XYSeries compareSeries;
     private final XYSeries dataSeries;
     public static int delayFactor = 10;
     private final XYTextAnnotation comparisonCounterAnnotation;
-    private final XYTextAnnotation swapCounterAnnotation;
+    private final XYTextAnnotation copyCounterAnnotation;
+    private final ValueMarker lowerBound;
+    private final ValueMarker upperBound;
+    private final ValueMarker pivot;
+    private final XYPlot plot;
+    private final ArrayList<ValueMarker> sliceMarkers;
 
     public BarGraphPanel(XYSeriesCollection dataSeriesCollection, String comparisonCounter,
-                         String swapCounter) {
+                         String copyCounter) {
         super(ChartFactory.
                 createXYBarChart("",
                         "",
                         false,"",
                         dataSeriesCollection));
-        pivotSeries = dataSeriesCollection.getSeries("pivot");
-        boundSeries = dataSeriesCollection.getSeries("bound");
         swapSeries = dataSeriesCollection.getSeries("swap");
         compareSeries = dataSeriesCollection.getSeries("compare");
         dataSeries = dataSeriesCollection.getSeries("data");
         comparisonCounterAnnotation = annotationBuilder(1, TextAnchor.BASELINE_LEFT,
                 comparisonCounter);
-        swapCounterAnnotation = annotationBuilder((int)dataSeries.getMaxX(),
-                TextAnchor.BASELINE_RIGHT, swapCounter);
+        copyCounterAnnotation = annotationBuilder((int)dataSeries.getMaxX(),
+                TextAnchor.BASELINE_RIGHT, copyCounter);
+        lowerBound = new ValueMarker(1);
+        upperBound = new ValueMarker(dataSeries.getItemCount());
+        pivot = new ValueMarker(0);
+        sliceMarkers = new ArrayList<>();
+
 
         JFreeChart dataChart = this.getChart();
-        XYPlot plot = dataChart.getXYPlot();
+        plot = dataChart.getXYPlot();
+        dataChart.getLegend().setPosition(RectangleEdge.TOP);
+        initializePlot();
+        initializeBounds();
+    }
 
+    private void initializeBounds() {
+        lowerBound.setLabel("Lower Bound");
+        lowerBound.setLabelAnchor(RectangleAnchor.CENTER);
+        lowerBound.setLabelTextAnchor(TextAnchor.BOTTOM_CENTER);
+        lowerBound.setPaint(Color.BLACK);
+
+        upperBound.setLabel("Upper Bound");
+        upperBound.setLabelAnchor(RectangleAnchor.CENTER);
+        upperBound.setLabelTextAnchor(TextAnchor.BOTTOM_CENTER);
+        upperBound.setPaint(Color.BLACK);
+
+        pivot.setLabel("Pivot");
+        pivot.setLabelAnchor(RectangleAnchor.CENTER);
+        pivot.setLabelTextAnchor(TextAnchor.TOP_CENTER);
+        pivot.setPaint(Color.BLACK);
+    }
+
+    private void initializePlot() {
         plot.getRangeAxis().setVisible(false);
         plot.getRangeAxis().setInverted(true);
         plot.getDomainAxis().setVisible(false);
@@ -49,9 +80,8 @@ public class BarGraphPanel extends ChartPanel{
         plot.setRangeGridlinesVisible(false);
         plot.getRangeAxis().setRange(0, dataSeries.getMaxY() + 4);
         plot.addAnnotation(comparisonCounterAnnotation);
-        plot.addAnnotation(swapCounterAnnotation);
+        plot.addAnnotation(copyCounterAnnotation);
         ((XYBarRenderer) plot.getRenderer()).setBarPainter(new StandardXYBarPainter());
-        dataChart.getLegend().setPosition(RectangleEdge.TOP);
     }
 
     private XYTextAnnotation annotationBuilder(int xLocation, TextAnchor anchor, String text) {
@@ -66,32 +96,47 @@ public class BarGraphPanel extends ChartPanel{
     public void highlightCompare(int indexOne, int indexTwo) {
         compareSeries.add(dataSeries.getX(indexOne), dataSeries.getMaxY() + 1);
         compareSeries.add(dataSeries.getX(indexTwo), dataSeries.getMaxY() + 1);
-        delay(1);
+        delay(2);
         compareSeries.clear();
     }
 
     public void highlightSwap(int indexOne, int indexTwo) {
         swapSeries.add(dataSeries.getX(indexOne), dataSeries.getY(indexOne));
         swapSeries.add(dataSeries.getX(indexTwo), dataSeries.getY(indexTwo));
-        delay(2);
+        delay(1);
         swapSeries.clear();
     }
 
     public void highlightBounds(int indexOne, int indexTwo) {
-        boundSeries.add(dataSeries.getX(indexOne), dataSeries.getMaxY() + 3);
-        boundSeries.add(dataSeries.getX(indexTwo), dataSeries.getMaxY() + 3);
+        lowerBound.setValue(indexOne + 1);
+        upperBound.setValue(indexTwo + 1);
+        plot.addDomainMarker(lowerBound);
+        plot.addDomainMarker(upperBound);
     }
 
     public void unhighlightBounds() {
-        boundSeries.clear();
+        plot.removeDomainMarker(lowerBound);
+        plot.removeDomainMarker(upperBound);
     }
 
     public void highlightPivot(int index) {
-        pivotSeries.add(dataSeries.getX(index), (int)dataSeries.getMaxY() + 2);
+        pivot.setValue(index + 1);
+        plot.addDomainMarker(pivot);
     }
 
     public void unhighlightPivot() {
-        pivotSeries.clear();
+        plot.removeDomainMarker(pivot);
+    }
+
+    public void highlightSlice(int index) {
+        ValueMarker sliceMarker = new ValueMarker(index + 1);
+
+        sliceMarkers.add(sliceMarker);
+        sliceMarker.setLabel("Slice");
+        sliceMarker.setLabelAnchor(RectangleAnchor.CENTER);
+        sliceMarker.setLabelTextAnchor(TextAnchor.BOTTOM_CENTER);
+        sliceMarker.setPaint(Color.BLACK);
+        plot.addDomainMarker(sliceMarker);
     }
 
     public void clearHighlights() {
@@ -99,6 +144,7 @@ public class BarGraphPanel extends ChartPanel{
         unhighlightBounds();
         swapSeries.clear();
         compareSeries.clear();
+        sliceMarkers.forEach(plot::removeDomainMarker);
     }
 
     private void delay(int length) {
@@ -120,16 +166,16 @@ public class BarGraphPanel extends ChartPanel{
         getChart().getXYPlot().getRangeAxis().setRange(0, newDataMax + 4);
         comparisonCounterAnnotation.setX(1);
         comparisonCounterAnnotation.setY(newDataMax + 2);
-        swapCounterAnnotation.setX(newDataMax);
-        swapCounterAnnotation.setY(newDataMax + 2);
+        copyCounterAnnotation.setX(newDataMax);
+        copyCounterAnnotation.setY(newDataMax + 2);
     }
 
     public void updateComparisonAnnotation(String newText) {
         comparisonCounterAnnotation.setText(newText);
     }
 
-    public void updateSwapAnnotation(String newText) {
-        swapCounterAnnotation.setText(newText);
+    public void updateCopyAnnotation(String newText) {
+        copyCounterAnnotation.setText(newText);
     }
 
     public void configureForMultipleConditionDisplay() {
@@ -140,5 +186,11 @@ public class BarGraphPanel extends ChartPanel{
         this.getChart().getLegend().setVisible(false);
         this.getChart().getTitle().setVisible(true);
         this.getChart().setTitle(method.title);
+    }
+
+    public void setRangeHeight(int maxValue) {
+        plot.getRangeAxis().setRange(0, maxValue + 4);
+        plot.removeAnnotation(comparisonCounterAnnotation);
+        plot.removeAnnotation(copyCounterAnnotation);
     }
 }

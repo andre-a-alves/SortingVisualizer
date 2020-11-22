@@ -16,41 +16,62 @@ public abstract class Merge extends Sort {
 
     private static void merge(Data data, int lowerBound, int middlePoint, int upperBound) {
         BarGraphPanel graphPanel = data.getGraphPanel();
-        XYSeries dataSeries = data.getDataSeries();
+//        XYSeries dataSeries = data.getDataSeries();
+        Data auxiliaryData = new Data(upperBound - lowerBound + 1, true, data.getSize());
+//        XYSeries auxiliarySeries = auxiliaryData.getDataSeries();
 
-        int[] auxiliary = new int[upperBound - lowerBound + 1];
+
+
+//        int[] auxiliary = new int[upperBound - lowerBound + 1];
         graphPanel.highlightBounds(lowerBound,upperBound);
         graphPanel.highlightPivot(middlePoint);
 
-        if (upperBound - lowerBound == 1) {
-            if (less(data, upperBound,lowerBound)) exchange(data, lowerBound, upperBound);
-            graphPanel.unhighlightPivot();
-            graphPanel.unhighlightBounds();
-            return;
-        }
+//        if (upperBound - lowerBound == 1) {
+//            if (less(data, upperBound,lowerBound)) exchange(data, lowerBound, upperBound);
+//            graphPanel.unhighlightPivot();
+//            graphPanel.unhighlightBounds();
+//            return;
+//        }
 
         int leftIndex = 0;
         int rightIndex = middlePoint - lowerBound;
 
-        for (int i = lowerBound; i < middlePoint; i++) auxiliary[leftIndex++] =
-                dataSeries.getY(i).intValue();
-        for (int j = middlePoint; j <= upperBound; j++) auxiliary[rightIndex++] =
-                dataSeries.getY(middlePoint + upperBound - j).intValue();
+        for (int i = lowerBound; i < middlePoint; i++)
+            copy(data, i, auxiliaryData, leftIndex++);
+//            auxiliary[leftIndex++] =
+//                dataSeries.getY(i).intValue();
+        for (int j = middlePoint; j <= upperBound; j++)
+            copy(data, middlePoint + upperBound - j, auxiliaryData, rightIndex++);
+//            auxiliary[rightIndex++] =
+//                dataSeries.getY(middlePoint + upperBound - j).intValue();
 
         leftIndex = 0;
-        int leftHighlight = lowerBound;
-        rightIndex = auxiliary.length - 1;
+//        int leftHighlight = lowerBound;
+//        rightIndex = auxiliary.length - 1;
+        rightIndex = auxiliaryData.getSize() - 1;
         for (int k = lowerBound; k <= upperBound; k++) {
-            if (auxiliary[rightIndex] < auxiliary[leftIndex]) {
-                dataSeries.updateByIndex(k, auxiliary[rightIndex--]);
-                graphPanel.highlightSwap(leftHighlight++, leftHighlight);
+            if (less(auxiliaryData, rightIndex, leftIndex, data)) {
+//            if (auxiliary[rightIndex] < auxiliary[leftIndex]) {
+                exchange(data,k, auxiliaryData, rightIndex--);
+//                dataSeries.updateByIndex(k, auxiliary[rightIndex--]);
+//                graphPanel.highlightSwap(leftHighlight++, leftHighlight);
             } else {
-                dataSeries.updateByIndex(k, auxiliary[leftIndex++]);
-                graphPanel.highlightSwap(leftHighlight, leftHighlight++);
+                exchange(data, k, auxiliaryData, leftIndex++);
+//                dataSeries.updateByIndex(k, auxiliary[leftIndex++]);
+//                graphPanel.highlightSwap(leftHighlight, leftHighlight++);
             }
         }
-
+        auxiliaryData.closeMergeWindow();
         graphPanel.unhighlightPivot();
         graphPanel.unhighlightBounds();
+    }
+
+    private static void copy(Data data, int index, Data auxiliaryData, int auxIndex) {
+        XYSeries dataSeries = data.getDataSeries();
+        XYSeries auxiliarySeries = auxiliaryData.getDataSeries();
+
+        auxiliarySeries.updateByIndex(auxIndex, dataSeries.getY(index));
+        data.increaseCopyCount();
+//        auxiliaryData.getGraphPanel().highlightSwap(index, index);
     }
 }

@@ -1,5 +1,5 @@
 public class RunnableSort implements Runnable{
-    private Data data;
+    private final Data data;
     SortingMethods currentMethod;
 
     public RunnableSort(Data data) {

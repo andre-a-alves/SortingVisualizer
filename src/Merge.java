@@ -52,11 +52,11 @@ public abstract class Merge extends Sort {
         for (int k = lowerBound; k <= upperBound; k++) {
             if (less(auxiliaryData, rightIndex, leftIndex, data)) {
 //            if (auxiliary[rightIndex] < auxiliary[leftIndex]) {
-                exchange(data,k, auxiliaryData, rightIndex--);
+                copy(auxiliaryData, rightIndex--, data,k);
 //                dataSeries.updateByIndex(k, auxiliary[rightIndex--]);
 //                graphPanel.highlightSwap(leftHighlight++, leftHighlight);
             } else {
-                exchange(data, k, auxiliaryData, leftIndex++);
+                copy(auxiliaryData, leftIndex++, data, k);
 //                dataSeries.updateByIndex(k, auxiliary[leftIndex++]);
 //                graphPanel.highlightSwap(leftHighlight, leftHighlight++);
             }

@@ -27,6 +27,7 @@ public class BarGraphPanel extends ChartPanel{
     private final ValueMarker pivot;
     private final XYPlot plot;
     private final ArrayList<ValueMarker> sliceMarkers;
+    private int annotationLocation = 2;
 
     public BarGraphPanel(XYSeriesCollection dataSeriesCollection, String comparisonCounter,
                          String copyCounter) {
@@ -86,7 +87,7 @@ public class BarGraphPanel extends ChartPanel{
 
     private XYTextAnnotation annotationBuilder(int xLocation, TextAnchor anchor, String text) {
         XYTextAnnotation annotation = new XYTextAnnotation(text, xLocation,
-                dataSeries.getMaxY() + 2);
+                dataSeries.getMaxY() + annotationLocation++);
         annotation.setTextAnchor(anchor);
         annotation.setFont(new Font(annotation.getFont().getName(), Font.PLAIN,
                 16));
@@ -98,6 +99,12 @@ public class BarGraphPanel extends ChartPanel{
         compareSeries.add(dataSeries.getX(indexTwo), dataSeries.getMaxY() + 1);
         delay(2);
         compareSeries.clear();
+    }
+
+    public void highlightCopy(int index) {
+        swapSeries.add(dataSeries.getX(index), dataSeries.getY(index));
+        delay(1);
+        swapSeries.clear();
     }
 
     public void highlightSwap(int indexOne, int indexTwo) {

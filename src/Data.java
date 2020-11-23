@@ -43,8 +43,10 @@ public class Data {
         if (mergeFlag) {
             mergeViewer = new MergeViewer(this);
             graphPanel.setRangeHeight(height);
-//            graphPanel.getChart().getTitle().setVisible(true);
             graphPanel.getChart().setTitle("Auxiliary Data for Merge Sort");
+            for (int i = 0; i < size; i++) {
+                dataSeries.updateByIndex(i,0);
+            }
         }
     }
 
@@ -83,12 +85,12 @@ public class Data {
     }
 
     private void updateComparisonCounterString() {
-        comparisonCounterString = "Number of Comparison Operations: " + comparisonCounter;
+        comparisonCounterString = "Comparison Operations: " + comparisonCounter;
         graphPanel.updateComparisonAnnotation(comparisonCounterString);
     }
 
     private void updateCopyCounterString() {
-        copyCounterString = "Number of Copy Operations: " + swapCounter;
+        copyCounterString = "Copy Operations: " + swapCounter;
         graphPanel.updateCopyAnnotation(copyCounterString);
     }
 

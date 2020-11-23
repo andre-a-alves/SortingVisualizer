@@ -16,49 +16,26 @@ public abstract class Merge extends Sort {
 
     private static void merge(Data data, int lowerBound, int middlePoint, int upperBound) {
         BarGraphPanel graphPanel = data.getGraphPanel();
-//        XYSeries dataSeries = data.getDataSeries();
         Data auxiliaryData = new Data(upperBound - lowerBound + 1, true, data.getSize());
-//        XYSeries auxiliarySeries = auxiliaryData.getDataSeries();
 
-
-
-//        int[] auxiliary = new int[upperBound - lowerBound + 1];
         graphPanel.highlightBounds(lowerBound,upperBound);
         graphPanel.highlightPivot(middlePoint);
-
-//        if (upperBound - lowerBound == 1) {
-//            if (less(data, upperBound,lowerBound)) exchange(data, lowerBound, upperBound);
-//            graphPanel.unhighlightPivot();
-//            graphPanel.unhighlightBounds();
-//            return;
-//        }
 
         int leftIndex = 0;
         int rightIndex = middlePoint - lowerBound;
 
         for (int i = lowerBound; i < middlePoint; i++)
             copy(data, i, auxiliaryData, leftIndex++);
-//            auxiliary[leftIndex++] =
-//                dataSeries.getY(i).intValue();
         for (int j = middlePoint; j <= upperBound; j++)
             copy(data, middlePoint + upperBound - j, auxiliaryData, rightIndex++);
-//            auxiliary[rightIndex++] =
-//                dataSeries.getY(middlePoint + upperBound - j).intValue();
 
         leftIndex = 0;
-//        int leftHighlight = lowerBound;
-//        rightIndex = auxiliary.length - 1;
         rightIndex = auxiliaryData.getSize() - 1;
         for (int k = lowerBound; k <= upperBound; k++) {
             if (less(auxiliaryData, rightIndex, leftIndex, data)) {
-//            if (auxiliary[rightIndex] < auxiliary[leftIndex]) {
                 copy(auxiliaryData, rightIndex--, data,k);
-//                dataSeries.updateByIndex(k, auxiliary[rightIndex--]);
-//                graphPanel.highlightSwap(leftHighlight++, leftHighlight);
             } else {
                 copy(auxiliaryData, leftIndex++, data, k);
-//                dataSeries.updateByIndex(k, auxiliary[leftIndex++]);
-//                graphPanel.highlightSwap(leftHighlight, leftHighlight++);
             }
         }
         auxiliaryData.closeMergeWindow();
@@ -70,8 +47,23 @@ public abstract class Merge extends Sort {
         XYSeries dataSeries = data.getDataSeries();
         XYSeries auxiliarySeries = auxiliaryData.getDataSeries();
 
-        auxiliarySeries.updateByIndex(auxIndex, dataSeries.getY(index));
         data.increaseCopyCount();
-//        auxiliaryData.getGraphPanel().highlightSwap(index, index);
+        auxiliarySeries.updateByIndex(auxIndex, dataSeries.getY(index));
+        (new Thread(new RunnableHighlight(data, index))).start();
+        auxiliaryData.getGraphPanel().highlightCopy(auxIndex);
+    }
+
+    private static class RunnableHighlight implements Runnable{
+        private final Data data;
+        private final int index;
+
+        RunnableHighlight(Data data, int index) {
+            this.data = data;
+            this.index = index;
+        }
+        @Override
+        public void run() {
+            data.getGraphPanel().highlightCopy(index);
+        }
     }
 }

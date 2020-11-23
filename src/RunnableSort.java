@@ -25,10 +25,10 @@ public class RunnableSort implements Runnable{
             case BUBBLE:
                 Bubble.sort(data);
                 break;
-            case MERGE:
-                Merge.sort(data);
+            case MERGE_SENTINEL:
+                MergeSentinel.sort(data);
                 break;
-            case QUICK:
+            case QUICK_H_INDEX:
                 QuickHighIndex.sort(data);
                 break;
             case QUICK_HOARE:

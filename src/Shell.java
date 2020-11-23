@@ -5,7 +5,7 @@ public abstract class Shell extends Sort{
 
         int gap = size / 2;
         while (gap >= 1) {
-            drawPivots(data, gap, size - 1);
+            if (gap > 1) drawPivots(data, gap, size - 1);
             sort(data, gap, size -1);
             graphPanel.clearHighlights();
             gap = Math.floorDiv(gap, 2);

@@ -4,12 +4,12 @@ public enum SortingMethods {
     SHELL_SHELL("Shell Sort using Shell's Sequence", "Shell", false, true),
     SHELL_KNUTH("Shell Sort using Knuth Sequence", "Knuth", false, true),
     BUBBLE("Bubble Sort", "Bubble Sort"),
-    MERGE("Merge Sort with Sentinel", "Merge Sort"),
-    QUICK("Quick Sort with Highest Index as Pivot", "High Index Pivot", true, false),
-    QUICK_HOARE("Quick Sort as Written by Hoare (1962)", "Original", true, false),
-    QUICK_LOMUTO("Quick Sort: Lomuto Implementation", "Lomuto", true, false),
+    MERGE_SENTINEL("Merge Sort Implementing Sentinel", "Implementing Sentinel", false, false, true),
+    QUICK_HOARE("Quick Sort as Written by Hoare (1962)", "Original", true),
+    QUICK_LOMUTO("Quick Sort: Lomuto Implementation", "Lomuto", true),
+    QUICK_H_INDEX("Quick Sort with Highest Index as Pivot", "High Index Pivot", true),
     QUICK_MEDIAN("Quick Sort: Hoare with Median-of-Three Pivot (Sedgewick)", "Median-of-Three",
-            true, false),
+            true),
     QUICK_INSERTION("Quick Sort: Hoare with Insertion Sort for Small Lists", "With Insertion",
             true, false),
     HEAP("Heap Sort", "Heap Sort");
@@ -18,18 +18,27 @@ public enum SortingMethods {
     public String menuTitle;
     public boolean quickType;
     public boolean shellType;
+    public boolean mergeType;
 
 
     SortingMethods(String title, String menuTitle) {
-        this.title = title;
-        this.menuTitle = menuTitle;
-        quickType = false;
-        shellType = false;
+        this(title, menuTitle, false);
     }
 
-    SortingMethods(String title, String menuTitle, boolean quickType, boolean shellType){
-        this(title, menuTitle);
+    SortingMethods(String title, String menuTitle, boolean quickType) {
+        this(title, menuTitle, quickType, false);
+    }
+
+    SortingMethods(String title, String menuTitle, boolean quickType, boolean shellType) {
+        this(title, menuTitle, quickType, shellType, false);
+    }
+
+    SortingMethods(String title, String menuTitle, boolean quickType, boolean shellType,
+                   boolean mergeType){
+        this.title = title;
+        this.menuTitle = menuTitle;
         this.quickType = quickType;
         this.shellType = shellType;
+        this.mergeType = mergeType;
     }
 }

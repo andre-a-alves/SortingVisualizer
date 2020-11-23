@@ -67,15 +67,17 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
     }
 
     private JMenu makeSortMenu() {
-        JMenu sortMenu = new JMenu("Sorting Algortihm");
+        JMenu sortMenu = new JMenu("Sorting Algorithm");
         JMenu quickMenu = new JMenu("Quick Sort");
         JMenu shellSortMenu = new JMenu("Shell Sort");
+        JMenu mergeMenu = new JMenu("Merge Sort");
 
         for (SortingMethods method : SortingMethods.values()) {
             JMenuItem methodItem = new JMenuItem(method.menuTitle);
             methodItem.addActionListener(e->dataControlPanel.setSortType(method));
             if (method.quickType) quickMenu.add(methodItem);
             else if (method.shellType) shellSortMenu.add(methodItem);
+            else if (method.mergeType) mergeMenu.add(methodItem);
             else sortMenu.add(methodItem);
         }
         JMenu compareMenu = new JMenu("Compare");
@@ -87,6 +89,7 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
         compareMethodsItem.addActionListener(e-> new ComparisonMenu(guiHandler));
 
         sortMenu.add(shellSortMenu);
+        sortMenu.add(mergeMenu);
         sortMenu.add(quickMenu);
         sortMenu.add(new JSeparator());
         sortMenu.add(compareMenu);

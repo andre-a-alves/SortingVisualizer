@@ -12,7 +12,7 @@ public abstract class MergeSentinel extends Merge {
         }
     }
 
-    private static void merge(Data data, int lowerBound, int middlePoint, int upperBound) {
+    protected static void merge(Data data, int lowerBound, int middlePoint, int upperBound) {
         BarGraphPanel graphPanel = data.getGraphPanel();
         Data auxiliaryData = new Data(upperBound - lowerBound + 1, true, data.getSize());
 

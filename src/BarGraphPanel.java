@@ -95,10 +95,15 @@ public class BarGraphPanel extends ChartPanel{
     }
 
     public void highlightCompare(int indexOne, int indexTwo) {
-        compareSeries.add(dataSeries.getX(indexOne), dataSeries.getMaxY() + 1);
-        compareSeries.add(dataSeries.getX(indexTwo), dataSeries.getMaxY() + 1);
-        delay(2);
-        compareSeries.clear();
+        try {
+            compareSeries.add(dataSeries.getX(indexOne), dataSeries.getMaxY() + 1);
+            compareSeries.add(dataSeries.getX(indexTwo), dataSeries.getMaxY() + 1);
+            delay(2);
+            compareSeries.clear();
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
+            return;
+        }
+
     }
 
     public void highlightCopy(int index) {
@@ -110,6 +115,14 @@ public class BarGraphPanel extends ChartPanel{
     public void highlightSwap(int indexOne, int indexTwo) {
         swapSeries.add(dataSeries.getX(indexOne), dataSeries.getY(indexOne));
         swapSeries.add(dataSeries.getX(indexTwo), dataSeries.getY(indexTwo));
+        delay(1);
+        swapSeries.clear();
+    }
+
+    public void highlightSwap(int indexOne, int indexTwo, int indexThree) {
+        swapSeries.add(dataSeries.getX(indexOne), dataSeries.getY(indexOne));
+        swapSeries.add(dataSeries.getX(indexTwo), dataSeries.getY(indexTwo));
+        swapSeries.add(dataSeries.getX(indexThree), dataSeries.getY(indexThree));
         delay(1);
         swapSeries.clear();
     }

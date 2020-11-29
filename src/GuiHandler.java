@@ -44,8 +44,8 @@ public class GuiHandler extends JFrame {
         masterContentPane.add(titleBar, BorderLayout.NORTH);
 
         setContentPane(masterContentPane);
-
         pack();
+        setLocationByPlatform(true);
     }
 
     public void setMultipleInitialConditionComparisonMode() {

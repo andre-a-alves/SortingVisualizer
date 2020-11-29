@@ -28,6 +28,15 @@ public class RunnableSort implements Runnable{
             case MERGE_SENTINEL:
                 MergeSentinel.sort(data);
                 break;
+            case MERGE_TOPDOWN:
+                MergeTopDown.sort(data);
+                break;
+            case MERGE_BOTTOMUP:
+                MergeBottomUp.sort(data);
+                break;
+            case MERGE_BOTTOM_IN_PLACE:
+                MergeBottomInPlace.sort(data);
+                break;
             case QUICK_H_INDEX:
                 QuickHighIndex.sort(data);
                 break;

@@ -3,22 +3,25 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 public class ComparisonMenu extends JFrame {
     private final GuiHandler guiHandler;
-    private final static ArrayList<JCheckBox> sortingMethodBoxes = new ArrayList<>();
+    private static ArrayList<JCheckBox> sortingMethodBoxes;
     private final JPanel mainPanel;
 
     public ComparisonMenu(GuiHandler guiHandler) {
             super("Choose Sorting Methods");
             this.guiHandler = guiHandler;
+            sortingMethodBoxes = new ArrayList<>();
             mainPanel = new JPanel();
             mainPanel.setBorder(new EmptyBorder(15,15,15,15));
             mainPanel.setLayout(new GridLayout(0,1));
             makeSortMethodCheckBoxes();
             makeSubmitButton();
             add(mainPanel);
+            setLocationByPlatform(true);
             pack();
 
             setVisible(true);
@@ -28,6 +31,7 @@ public class ComparisonMenu extends JFrame {
         JPanel normal = new JPanel();
         JPanel shell = new JPanel();
         JPanel quick = new JPanel();
+        JPanel merge = new JPanel();
         ItemListener checkCounter = new CheckCounter();
 
         for (SortingMethods method : SortingMethods.values()) {
@@ -35,6 +39,7 @@ public class ComparisonMenu extends JFrame {
             box.setName(method.name());
             if (method.shellType) shell.add(box);
             else if (method.quickType) quick.add(box);
+            else if (method.mergeType) merge.add(box);
             else normal.add(box);
             box.addItemListener(checkCounter);
             sortingMethodBoxes.add(box);
@@ -42,12 +47,15 @@ public class ComparisonMenu extends JFrame {
         normal.setLayout(new GridLayout(0, 3));
         shell.setLayout(new GridLayout(0,3));
         quick.setLayout(new GridLayout(0,2));
+        merge.setLayout(new GridLayout(0, 3));
         mainPanel.add(new JLabel("General Sorting Algorithms:"));
         mainPanel.add(normal);
         mainPanel.add(new JLabel("Shell Sorting Algorithms:"));
         mainPanel.add(shell);
         mainPanel.add(new JLabel("Quick Sorting Algorithms:"));
         mainPanel.add(quick);
+        mainPanel.add(new JLabel("Merge Sorting Algorithms:"));
+        mainPanel.add(merge);
     }
 
     private void makeSubmitButton() {
@@ -57,6 +65,7 @@ public class ComparisonMenu extends JFrame {
     }
 
     private void changeMode() {
+        setVisible(false);
         int checkedBoxes = 0;
         for (JCheckBox box : sortingMethodBoxes)
             if (box.isSelected())
@@ -71,8 +80,9 @@ public class ComparisonMenu extends JFrame {
             if (box.isSelected())
                 checkedMethods.add(SortingMethods.valueOf(box.getName()));
         guiHandler.setMultipleSortMethodComparisonMode(checkedMethods);
-        sortingMethodBoxes.clear();
-        checkedMethods.clear();
+//        sortingMethodBoxes.clear();
+//        checkedMethods.clear();
+//        dispose();
         dispose();
     }
 

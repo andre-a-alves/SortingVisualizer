@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * This class is an extension of JFrame which displays the different sorting methods to be
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 public class ComparisonMenu extends JFrame {
     private final GuiHandler guiHandler;
     private static ArrayList<JCheckBox> sortingMethodBoxes;
+    private static ArrayList<JCheckBox> mergeBoxes;
     private final JPanel mainPanel;
 
     /**
@@ -22,6 +24,7 @@ public class ComparisonMenu extends JFrame {
             super("Choose Sorting Methods");
             this.guiHandler = guiHandler;
             sortingMethodBoxes = new ArrayList<>();
+            mergeBoxes = new ArrayList<>();
             mainPanel = new JPanel();
             mainPanel.setBorder(new EmptyBorder(15,15,15,15));
             mainPanel.setLayout(new GridLayout(0,1));
@@ -44,9 +47,14 @@ public class ComparisonMenu extends JFrame {
         for (SortingMethods method : SortingMethods.values()) {
             JCheckBox box = new JCheckBox(method.title);
             box.setName(method.name());
-            if (method.shellType) shell.add(box);
-            else if (method.quickType) quick.add(box);
-            else if (method.mergeType) merge.add(box);
+            if (method.shellType)
+                shell.add(box);
+            else if (method.quickType)
+                quick.add(box);
+            else if (method.mergeType) {
+                merge.add(box);
+                mergeBoxes.add(box);
+            }
             else normal.add(box);
             box.addItemListener(checkCounter);
             sortingMethodBoxes.add(box);
@@ -116,11 +124,21 @@ public class ComparisonMenu extends JFrame {
                     for (JCheckBox box : sortingMethodBoxes)
                         if (!box.isSelected())
                             box.setEnabled(false);
+                if (mergeBoxes.contains(source))
+                    for (JCheckBox mergeBox : mergeBoxes)
+                        if (mergeBox != source)
+                            mergeBox.setEnabled(false);
             } else {
                 checkedBoxes--;
                 if (checkedBoxes < MAX_BOXES)
                     for (JCheckBox box : sortingMethodBoxes)
                         box.setEnabled(true);
+                for (JCheckBox box : mergeBoxes) {
+                    if (box.isSelected())
+                        for (JCheckBox mergeBox : mergeBoxes)
+                            if (box != mergeBox)
+                                mergeBox.setEnabled(false);
+                }
             }
         }
     }

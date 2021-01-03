@@ -33,4 +33,22 @@ public class MultipleInitialConditionDataControlPanel extends DataControlPanel{
 
         return dataResetPanel;
     }
+
+    public void setSortType(SortingMethods newMethod) {
+        switch (newMethod) {
+            case MERGE_TOPDOWN:
+            case MERGE_BOTTOMUP:
+            case MERGE_SENTINEL:
+            case MERGE_BOTTOM_IN_PLACE:
+                JOptionPane.showMessageDialog(this,
+                        "Sorry, but there is a known bug where this application cannot" +
+                                "yet support this feature for merge sort. If you wish to have" +
+                                "this feature developed, please contact the author, whose " +
+                                "contact information can be found in Help->About");
+                break;
+            default:
+                dataHandler.setBehavior(newMethod);
+                guiHandler.setTitle(newMethod.title);
+        }
+    }
 }

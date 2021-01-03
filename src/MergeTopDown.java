@@ -14,8 +14,8 @@ public abstract class MergeTopDown extends Merge {
         graphPanel.highlightBounds(lowerBound,upperBound);
         graphPanel.highlightPivot(middlePoint);
 
-        Data auxiliaryDataOne = new Data(middlePoint - lowerBound + 1, true, data.getSize());
-        Data auxiliaryDataTwo = new Data(upperBound - middlePoint, true, data.getSize());
+        Data auxiliaryDataOne = new Data(middlePoint - lowerBound + 1, mergeViewerFrame, data.getSize());
+        Data auxiliaryDataTwo = new Data(upperBound - middlePoint, mergeViewerFrame, data.getSize());
 
         int leftIndex = 0;
         int rightIndex = 0;
@@ -26,8 +26,8 @@ public abstract class MergeTopDown extends Merge {
 
         merge (auxiliaryDataOne, auxiliaryDataTwo, data, lowerBound);
 
-        auxiliaryDataOne.closeMergeWindow();
-        auxiliaryDataTwo.closeMergeWindow();
+        auxiliaryDataOne.removeThisMergeDataset();
+        auxiliaryDataTwo.removeThisMergeDataset();
 
         graphPanel.unhighlightPivot();
         graphPanel.unhighlightBounds();

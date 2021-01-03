@@ -1,6 +1,7 @@
 import org.jfree.data.xy.XYSeries;
 
 public abstract class Merge extends Sort {
+    protected static MergeViewerFrame mergeViewerFrame = new MergeViewerFrame();
 
     protected static void merge(Data auxiliaryDataOne, Data auxiliaryDataTwo, Data data, int lowerBound) {
         int upperBound = lowerBound + auxiliaryDataOne.getSize() + auxiliaryDataTwo.getSize() - 1;

@@ -23,9 +23,9 @@ public class Data {
     private String comparisonCounterString;
     private int swapCounter;
     private String copyCounterString;
-    private MergeViewer mergeViewer;
+    private MergeViewerFrame mergeViewerFrame;
 
-    public Data(int size, boolean mergeFlag, int height) {
+    public Data(int size, MergeViewerFrame mergeViewerFrame, int height) {
         this.size = size;
         this.savedList = new ArrayList<>();
         dataSeries = new XYSeries("data");
@@ -44,10 +44,11 @@ public class Data {
 
         graphPanel = new BarGraphPanel(makeDataSeriesCollection(), comparisonCounterString, copyCounterString);
         resetCounters();
-        if (mergeFlag) {
-            mergeViewer = new MergeViewer(this);
+        if (mergeViewerFrame != null) {
+            this.mergeViewerFrame = mergeViewerFrame;
+            mergeViewerFrame.addViewer(graphPanel);
             graphPanel.setRangeHeight(height);
-            graphPanel.getChart().setTitle("Auxiliary Data for Merge Sort");
+            graphPanel.removeChartLegend();
             for (int i = 0; i < size; i++) {
                 dataSeries.updateByIndex(i,0);
             }
@@ -55,15 +56,15 @@ public class Data {
     }
 
     public Data(int size) {
-        this(size, false, size);
+        this(size, null, size);
     }
 
     public Data() {
         this(SingleDataHandler.DEFAULT_SIZE);
     }
 
-    public void closeMergeWindow() {
-        mergeViewer.closeWindow();
+    public void removeThisMergeDataset() {
+        mergeViewerFrame.removeViewer(graphPanel);
     }
 
     public void resetCounters() {

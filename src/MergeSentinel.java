@@ -14,7 +14,7 @@ public abstract class MergeSentinel extends Merge {
 
     protected static void merge(Data data, int lowerBound, int middlePoint, int upperBound) {
         BarGraphPanel graphPanel = data.getGraphPanel();
-        Data auxiliaryData = new Data(upperBound - lowerBound + 1, true, data.getSize());
+        Data auxiliaryData = new Data(upperBound - lowerBound + 1, mergeViewerFrame, data.getSize());
 
         graphPanel.highlightBounds(lowerBound,upperBound);
         graphPanel.highlightPivot(middlePoint);
@@ -36,7 +36,7 @@ public abstract class MergeSentinel extends Merge {
                 copy(auxiliaryData, leftIndex++, data, k);
             }
         }
-        auxiliaryData.closeMergeWindow();
+        auxiliaryData.removeThisMergeDataset();
         graphPanel.unhighlightPivot();
         graphPanel.unhighlightBounds();
     }

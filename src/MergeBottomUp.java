@@ -1,7 +1,10 @@
 import java.util.LinkedList;
 
 public abstract class MergeBottomUp extends Merge {
+    private static Data sortingData;
+
     public static void sort(Data data) {
+        sortingData = data;
         LinkedList<Data> queue = new LinkedList<>();
         Data retrievedData;
 
@@ -25,8 +28,34 @@ public abstract class MergeBottomUp extends Merge {
         }
 
         for (int i = 0; i < data.getSize(); i++) {
+            sortingData.increaseCopyCount();
             copy(retrievedData, i, data, i);
         }
         retrievedData.removeThisMergeDataset();
+    }
+
+    protected static void merge(Data auxiliaryDataOne, Data auxiliaryDataTwo, Data data, int lowerBound) {
+        int upperBound = lowerBound + auxiliaryDataOne.getSize() + auxiliaryDataTwo.getSize() - 1;
+        int leftIndex = 0;
+        int rightIndex = 0;
+        for (int k = lowerBound; k <= upperBound; k++) {
+            if (leftIndex >= auxiliaryDataOne.getSize()) {
+                copy(auxiliaryDataTwo, rightIndex++, data, k);
+                sortingData.increaseCopyCount();
+            }
+            else if (rightIndex >= auxiliaryDataTwo.getSize()) {
+                copy(auxiliaryDataOne, leftIndex++, data, k);
+                sortingData.increaseCopyCount();
+            }
+            else if (less(auxiliaryDataOne, leftIndex, auxiliaryDataTwo, rightIndex, data)) {
+                sortingData.increaseComparisonCount();
+                sortingData.increaseCopyCount();
+                copy(auxiliaryDataOne, leftIndex++, data, k);
+            } else {
+                sortingData.increaseComparisonCount();
+                sortingData.increaseCopyCount();
+                copy(auxiliaryDataTwo, rightIndex++, data, k);
+            }
+        }
     }
 }

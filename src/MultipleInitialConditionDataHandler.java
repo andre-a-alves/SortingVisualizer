@@ -17,7 +17,7 @@ public class MultipleInitialConditionDataHandler extends DataHandler {
         for (int i = 0; i < numberOfDisplays; i++) {
             dataList.add(new Data());
             add(dataList.get(i).getGraphPanel());
-            dataList.get(i).getGraphPanel().configureForMultipleConditionDisplay();
+            dataList.get(i).getGraphPanel().removeChartLegend();
         }
     }
 

@@ -3,18 +3,11 @@ import java.awt.*;
 import java.awt.event.WindowEvent;
 
 public class MergeViewer extends JFrame {
-    private static int location = 50;
 
     public MergeViewer(Data data) {
         super("Auxiliary Merge Data");
         BarGraphPanel graphPanel = data.getGraphPanel();
 
-//        JFreeChart chart = ChartFactory.createXYBarChart(
-//                "Auxiliary Merge Data",
-//                "",
-//                false, "",
-//                data.makeDataSeriesCollection());
-//        ChartPanel chartPanel = new ChartPanel(chart);
         graphPanel.setPreferredSize(new Dimension(600,400));
         add(graphPanel);
 
@@ -22,9 +15,6 @@ public class MergeViewer extends JFrame {
         pack();
         setLocationByPlatform(true);
         setVisible(true);
-
-        //        setLocation(location,location);
-//        location += 25;
     }
 
     public void closeWindow() {

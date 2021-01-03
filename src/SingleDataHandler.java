@@ -9,7 +9,7 @@ public class SingleDataHandler extends DataHandler {
         super();
         data = new Data();
         setDisplay();
-        setLayout(new CenterLayout());
+        setLayout(new GridLayout(1,1));
     }
 
     private void setDisplay() {

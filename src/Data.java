@@ -6,6 +6,10 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.concurrent.*;
 
+/**
+ * The Data class is central to this application. It contains the data to be sorted within an
+ * XYSeries, comparison counts, and the 
+ */
 public class Data {
     private int size;
     private final XYSeries dataSeries;

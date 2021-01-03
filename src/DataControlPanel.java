@@ -1,6 +1,7 @@
-import javax.swing.*;
-import java.awt.*;
-import java.util.Dictionary;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import java.awt.GridLayout;
 import java.util.Hashtable;
 
 public abstract class DataControlPanel extends JPanel {

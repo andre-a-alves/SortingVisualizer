@@ -3,14 +3,21 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
+/**
+ * This class is an extension of JFrame which displays the different sorting methods to be
+ * compared when comparing sorting methods.
+ */
 public class ComparisonMenu extends JFrame {
     private final GuiHandler guiHandler;
     private static ArrayList<JCheckBox> sortingMethodBoxes;
     private final JPanel mainPanel;
 
+    /**
+     * Standard constructor for the ComparisonMenu object.
+     * @param guiHandler the GuiHandler object which will display the data being sorted.
+     */
     public ComparisonMenu(GuiHandler guiHandler) {
             super("Choose Sorting Methods");
             this.guiHandler = guiHandler;
@@ -80,9 +87,6 @@ public class ComparisonMenu extends JFrame {
             if (box.isSelected())
                 checkedMethods.add(SortingMethods.valueOf(box.getName()));
         guiHandler.setMultipleSortMethodComparisonMode(checkedMethods);
-//        sortingMethodBoxes.clear();
-//        checkedMethods.clear();
-//        dispose();
         dispose();
     }
 
@@ -94,6 +98,10 @@ public class ComparisonMenu extends JFrame {
                 JOptionPane.PLAIN_MESSAGE);
     }
 
+    /**
+     * This internal class prevents more checkboxes from being selected than allowed by the
+     * application.
+     */
     static class CheckCounter implements ItemListener {
         private final int MAX_BOXES = 4;
         private int checkedBoxes = 0;

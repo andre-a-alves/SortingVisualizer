@@ -1,4 +1,11 @@
+/**
+ * This class performs bubble sort on a Data object.
+ */
 public abstract class Bubble extends Sort {
+    /**
+     * Performs bubble sort on a Data object.
+     * @param data The data object to sort.
+     */
     public static void sort(Data data) {
         int size = data.getSize();
 

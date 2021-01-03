@@ -100,14 +100,14 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
     private void showAbout()
     {
         JOptionPane.showMessageDialog(this,
-                "Version\n" + VERSION +
-                        "\nThis application is a visual aid" +
-                        "\nto help visualize different sorting" +
-                        "\nalgorithms." +
-                        "\nPlease direct any questions to" +
-                        "\nLord André Avìla Alves, a real noble" +
-                        "\nof the Principality of Sealand," +
-                        "\nat andre@alves.me",
+                "This application is a visual aid to help visualize different sorting " +
+                        "algorithms." +
+                        "\n\nApplication author: Andre Alves\n\n" +
+                        "    https://www.linkedin.com/in/andre-a-alves/\n" +
+                        "    https://github.com/andre-a-alves\n\n" +
+                        "Andre is actively searching for a semester-long internship in the fall of 2021\n" +
+                        "as part of his information engineering (computer engineering) study program.\n\n" +
+                        "Version: " + VERSION,
                 "About This Application",
                 JOptionPane.PLAIN_MESSAGE);
     }
